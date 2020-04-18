@@ -12,7 +12,7 @@ router.get('/', (_, res) => {
     };
   });
 
-  res.send(packsToSend);
+  res.send({ packs: packsToSend });
 });
 
 router.get('/router', (_, res) => {
