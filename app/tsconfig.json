@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "jsx": "react-native",
+    "lib": ["dom", "esnext"],
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowJs": true,
+    "baseUrl": "src",
+    "forceConsistentCasingInFileNames": true,
+    "isolatedModules": true,
+    "module": "esnext",
+    "noImplicitReturns": true,
+    "noUnusedParameters": true,
+    "preserveConstEnums": true,
+    "noUnusedLocals": true,
+    "outDir": "build/lib",
+    "rootDirs": ["src"],
+    "sourceMap": true,
+    "strict": true,
+    "target": "esnext"
+  },
+  "exclude": ["node_modules", "src/**/*.test.*"],
+  "include": ["next-env.d.ts", "src/**/*.ts", "src/**/*.tsx", "jest//**/*.ts"]
+}
