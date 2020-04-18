@@ -8,9 +8,9 @@ import compression from 'compression';
 import helmet from 'helmet';
 import cors from 'cors';
 import morgan from 'morgan';
-import { Socket } from 'socket.io';
+import socketIO, { Socket } from 'socket.io';
 
-import { createRoom } from './controllers/User';
+import { createRoom, joinRoom, startGame, disconnect, chosenCard, chosenSelectedWinner } from './controllers/Events';
 
 import packsHandler from './routes/Packs';
 
@@ -18,8 +18,7 @@ const app = express();
 
 const server = http.createServer(app);
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const io = require('socket.io')(server);
+const io = socketIO(server);
 
 const port = process.env.PORT || 3000;
 
@@ -37,11 +36,13 @@ app.use('/api/packs', packsHandler);
 app.get('/', (_, res) => res.sendFile(__dirname + '/index.html'));
 
 io.on('connection', (socket: Socket) => {
-  socket.on('createRoom', (payload: any) => {
-    const room = createRoom(payload);
+  createRoom(socket);
+  joinRoom(socket, io);
+  startGame(socket, io);
+  chosenCard(socket, io);
+  chosenSelectedWinner(socket, io);
 
-    console.log(room);
-  });
+  disconnect(socket, io);
 });
 
 const appInit = async () => {

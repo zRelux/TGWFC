@@ -52,6 +52,37 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
     <script>
       Window.connectionSocket = io();
+
+      // Join chatroom
+      // Window.connectionSocket.emit('createRoom', { username: 'Test username', numberOfRounds: 10, packs: ['1'] });
+      // Window.connectionSocket.emit('joinRoom', { username: 'Test username 2', roomId: '1' });
+      // Window.connectionSocket.emit('startGame', { roomId: '1' });
+      // Window.connectionSocket.emit('chosenCard', { chosenCard: '', roomId: '1' });
+
+      // Get room and users
+      Window.connectionSocket.on('createRoomReply', payload => {
+        console.log('createRoomReply', payload);
+      });
+
+      Window.connectionSocket.on('joinRoomReply', payload => {
+        console.log('joinRoomReply', payload);
+      });
+
+      Window.connectionSocket.on('startGameReply', payload => {
+        console.log('startGameReply', payload);
+      });
+
+      Window.connectionSocket.on('chosenCardReply', payload => {
+        console.log('chosenCardReply', payload);
+      });
+
+      Window.connectionSocket.on('choserSelectedWinnerReply', payload => {
+        console.log('choserSelectedWinnerReply', payload);
+      });
+
+      Window.connectionSocket.on('userDisconnected', payload => {
+        console.log('userDisconnected', payload);
+      });
     </script>
   </body>
 </html>

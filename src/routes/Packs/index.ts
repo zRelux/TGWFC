@@ -1,6 +1,6 @@
 import express from 'express';
 
-import packs from '../../db';
+import rooms, { packs } from '../../db';
 
 const router = express.Router();
 
@@ -13,6 +13,10 @@ router.get('/', (_, res) => {
   });
 
   res.send(packsToSend);
+});
+
+router.get('/router', (_, res) => {
+  res.send({ rooms });
 });
 
 export default router;

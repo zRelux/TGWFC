@@ -5,13 +5,55 @@ export type Pack = {
   toUse: string[];
 };
 
-const packs: Pack[] = [
+export const packs: Pack[] = [
   {
     id: '1',
-    name: 'Jews',
-    toFill: [],
-    toUse: []
+    name: 'Jews Pack',
+    toFill: [
+      'Card to give 1',
+      'Card to give 2',
+      'Card to give 3',
+      'Card to give 4',
+      'Card to give 5',
+      'Card to give 6',
+      'Card to give 7',
+      'Card to give 8',
+      'Card to give 9',
+      'Card to give 10'
+    ],
+    toUse: [
+      'Card to use 1',
+      'Card to use 2',
+      'Card to use 3',
+      'Card to use 4',
+      'Card to use 5',
+      'Card to use 6',
+      'Card to use 7',
+      'Card to use 8',
+      'Card to use 9',
+      'Card to use 10'
+    ]
   }
 ];
 
-export default packs;
+type RoomUser = {
+  username: string;
+  userId: string;
+  points: number;
+  cards: string[];
+};
+
+export type Room = {
+  id: string;
+  users: RoomUser[];
+  cardsToGive: { index: number; cards: string[] };
+  cardsToFill: { index: number; cards: string[] };
+  numberOfRounds: number;
+  roundsPlayed: number;
+  chooser?: { index: number; user: RoomUser };
+  chosenCards: { userId: string; card: string }[];
+};
+
+const rooms: Room[] = [];
+
+export default rooms;
