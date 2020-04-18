@@ -1,6 +1,8 @@
 import socketIO, { Socket } from 'socket.io';
 
 import findRoom from '../../utils/findRoom';
+import addWithBounds from '../../utils/addWithBounds';
+import assingCards from '../../utils/assingCards';
 
 type WinnerPayload = {
   roomId: string;
@@ -15,7 +17,7 @@ const winnerRound = (payload: WinnerPayload) => {
     room.numberOfRounds--;
 
     if (room.chooser) {
-      const newIndex = room.chooser.index + 1 >= room.users.length ? 0 : room.chooser.index + 1;
+      const newIndex = addWithBounds(room.chooser.index, room.users.length);
       room.chooser = { index: newIndex, user: room.users[newIndex] };
     }
 
@@ -29,18 +31,7 @@ const winnerRound = (payload: WinnerPayload) => {
       });
 
       room.users.forEach(user => {
-        for (let i = 0; i < 1; i++) {
-          let indexToUse = room.cardsToGive.index + 1;
-
-          if (indexToUse >= room.cardsToGive.cards.length) {
-            indexToUse = 0;
-          }
-
-          room.cardsToGive.index = indexToUse;
-          const card = room.cardsToGive.cards[indexToUse];
-
-          user.cards.push(card);
-        }
+        user.cards = assingCards(room, 1);
       });
     }
 

@@ -15,7 +15,7 @@ router.get('/', (_, res) => {
   res.send({ packs: packsToSend });
 });
 
-router.get('/router', (_, res) => {
+router.get('/rooms', (_, res) => {
   res.send({ rooms });
 });
 
