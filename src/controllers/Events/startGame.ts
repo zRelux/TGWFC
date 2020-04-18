@@ -12,7 +12,7 @@ export const startGame = (payload: StartPayload) => {
   const room = findRoom(payload.roomId);
 
   if (room) {
-    if (room.users.length === 1) {
+    if (room.users.length < 2) {
       throw new Error('Too less players');
     }
 

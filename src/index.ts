@@ -10,7 +10,15 @@ import cors from 'cors';
 import morgan from 'morgan';
 import socketIO, { Socket } from 'socket.io';
 
-import { createRoom, joinRoom, startGame, disconnect, chosenCard, chosenSelectedWinner } from './controllers/Events';
+import {
+  createRoom,
+  joinRoom,
+  startGame,
+  chosenCard,
+  chosenSelectedWinner,
+  finishGame,
+  disconnect
+} from './controllers/Events';
 
 import packsHandler from './routes/Packs';
 
@@ -41,6 +49,7 @@ io.on('connection', (socket: Socket) => {
   startGame(socket, io);
   chosenCard(socket, io);
   chosenSelectedWinner(socket, io);
+  finishGame(socket, io);
 
   disconnect(socket, io);
 });

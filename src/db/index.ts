@@ -36,7 +36,7 @@ export const packs: Pack[] = [
   }
 ];
 
-type RoomUser = {
+export type RoomUser = {
   username: string;
   userId: string;
   points: number;

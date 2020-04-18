@@ -1,7 +1,7 @@
 export default (number: number, bound: number) => {
   let returnNumber = number + 1;
 
-  if (number >= bound) {
+  if (returnNumber >= bound) {
     returnNumber = 0;
   }
 

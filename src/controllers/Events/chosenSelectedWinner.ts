@@ -9,30 +9,39 @@ type WinnerPayload = {
   winnerCard: string;
 };
 
-const winnerRound = (payload: WinnerPayload) => {
+const winnerRound = (payload: WinnerPayload, socketId: string) => {
   const room = findRoom(payload.roomId);
 
   if (room) {
     room.roundsPlayed++;
-    room.numberOfRounds--;
 
-    if (room.chooser) {
-      const newIndex = addWithBounds(room.chooser.index, room.users.length);
-      room.chooser = { index: newIndex, user: room.users[newIndex] };
+    if (room.numberOfRounds === 0) {
+      throw new Error('Game has finished');
     }
+
+    room.numberOfRounds--;
 
     const winner = room.chosenCards.find(({ card }) => payload.winnerCard === card);
 
     if (winner) {
       room.users.forEach(user => {
         if (user.userId === winner.userId) {
-          user.points;
+          user.points++;
         }
       });
 
       room.users.forEach(user => {
         user.cards = assingCards(room, 1);
       });
+    }
+
+    if (room.chooser) {
+      if (room.chooser.user.userId !== socketId) {
+        throw new Error('You are not the chooser');
+      }
+
+      const newIndex = addWithBounds(room.chooser.index, room.users.length);
+      room.chooser = { index: newIndex, user: room.users[newIndex] };
     }
 
     return room;
@@ -42,9 +51,9 @@ const winnerRound = (payload: WinnerPayload) => {
 };
 
 export default (socket: Socket, io: socketIO.Server) => {
-  socket.on('choseSelectedWinner', (payload: WinnerPayload) => {
+  socket.on('chosenSelectedWinner', (payload: WinnerPayload) => {
     try {
-      const room = winnerRound(payload);
+      const room = winnerRound(payload, socket.id);
 
       room.users.forEach(user => {
         let iAmChooser = false;
@@ -53,27 +62,17 @@ export default (socket: Socket, io: socketIO.Server) => {
           iAmChooser = user.userId === room.chooser.user.userId;
         }
 
-        io.to(user.userId).emit('choseSelectedWinnerReply', {
+        io.to(user.userId).emit('chosenSelectedWinnerReply', {
           cardToShow: room.cardsToFill.cards[room.cardsToFill.index],
           cards: user.cards,
           iAmChooser,
           round: room.roundsPlayed
         });
 
-        io.to(room.id).emit('choseSelectedWinnerReply', {
-          room
-        });
-
-        let indexToUse = room.cardsToGive.index + 1;
-
-        if (indexToUse >= room.cardsToGive.cards.length) {
-          indexToUse = 0;
-        }
-
-        room.cardsToFill.index = indexToUse;
+        room.cardsToFill.index = addWithBounds(room.cardsToFill.index, room.cardsToGive.cards.length);
       });
     } catch (error) {
-      socket.emit('choseSelectedWinnerReply', {
+      socket.emit('chosenSelectedWinnerReply', {
         error: error.message
       });
     }

@@ -11,6 +11,11 @@ const chosenCard = (payload: ChosenCard, userId: string) => {
   const room = findRoom(payload.roomId);
 
   if (room) {
+    if (room.chooser)
+      if (room.chooser.user.userId === userId) {
+        throw new Error('You are the chooser');
+      }
+
     room.chosenCards.push({ userId, card: payload.chosenCard });
 
     room.users.forEach(user => {

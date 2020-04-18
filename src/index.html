@@ -58,6 +58,7 @@
       // Window.connectionSocket.emit('joinRoom', { username: 'Test username 2', roomId: '1' });
       // Window.connectionSocket.emit('startGame', { roomId: '1' });
       // Window.connectionSocket.emit('chosenCard', { chosenCard: '', roomId: '1' });
+      // Window.connectionSocket.emit('choseSelectedWinner', { winnerCard: '', roomId: '1' });
 
       // Get room and users
       Window.connectionSocket.on('createRoomReply', payload => {
@@ -76,8 +77,12 @@
         console.log('chosenCardReply', payload);
       });
 
-      Window.connectionSocket.on('choserSelectedWinnerReply', payload => {
-        console.log('choserSelectedWinnerReply', payload);
+      Window.connectionSocket.on('chosenSelectedWinnerReply', payload => {
+        console.log('chosenSelectedWinnerReply', payload);
+      });
+
+      Window.connectionSocket.on('finishGameReply', payload => {
+        console.log('finishGameReply', payload);
       });
 
       Window.connectionSocket.on('userDisconnected', payload => {
