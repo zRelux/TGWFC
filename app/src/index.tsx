@@ -10,7 +10,6 @@ import HomeScreen from './screens/HomeScreen';
 
 export type RootStackParamList = {
   Home: undefined;
-  List: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();

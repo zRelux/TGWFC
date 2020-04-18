@@ -21,7 +21,7 @@ export default (socket: Socket, io: socketIO.Server) => {
       const { leftUser, roomToLeave } = findRoomToDisconnect(socket.id);
 
       io.to(roomToLeave.id).emit('userDisconnected', {
-        userLeft: leftUser
+        user_left: leftUser
       });
     } catch (error) {
       console.error(error);

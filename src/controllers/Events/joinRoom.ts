@@ -32,7 +32,7 @@ export default (socket: Socket, io: socketIO.Server) => {
       socket.join(room.id);
 
       io.to(room.id).emit('joinRoomReply', {
-        newUser: {
+        new_user: {
           id: socket.id,
           username: payload.username
         }

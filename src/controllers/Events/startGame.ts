@@ -47,9 +47,9 @@ export default (socket: Socket, io: socketIO.Server) => {
         }
 
         io.to(user.userId).emit('startGameReply', {
-          cardToShow: room.cardsToFill.cards[room.cardsToFill.index],
+          card_to_show: room.cardsToFill.cards[room.cardsToFill.index],
           cards: user.cards,
-          iAmChooser,
+          i_am_chooser: iAmChooser,
           round: room.roundsPlayed
         });
 
