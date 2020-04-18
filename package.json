@@ -20,7 +20,9 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "helmet": "^3.21.3",
-    "morgan": "^1.9.1"
+    "morgan": "^1.9.1",
+    "shortid": "^2.2.15",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "@types/compression": "^1.7.0",
@@ -30,6 +32,8 @@
     "@types/helmet": "^0.0.45",
     "@types/morgan": "^1.9.0",
     "@types/node": "^13.9.0",
+    "@types/shortid": "^0.0.29",
+    "@types/socket.io": "^2.1.4",
     "@typescript-eslint/eslint-plugin": "^2.16.0",
     "@typescript-eslint/parser": "^2.16.0",
     "eslint": "^6.8.0",

@@ -11,7 +11,8 @@
     "sourceMap": true,
     "strict": true,
     "target": "ESNext",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "typeRoots": ["./typings/index.d.ts", "../../node_modules/@types"]
   },
   "exclude": ["node_modules"],
   "include": ["src/**/*.ts"]
