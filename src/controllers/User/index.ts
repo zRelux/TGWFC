@@ -1,15 +1,16 @@
 import shortId from 'shortid';
 
-import packs, { Pack } from '../../db';
+import packs from '../../db';
 
 export type Payload = {
-  packs: Pack[];
+  numberOfRounds: number;
+  packs: string[];
 };
 
 const rooms = [];
 
 export const createRoom = (payload: Payload) => {
-  const packsOfTheRoom = payload.packs.map(({ id }) => {
+  const packsOfTheRoom = payload.packs.map(id => {
     return packs.filter(pack => id === pack.id)[0];
   });
 

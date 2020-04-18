@@ -1,5 +1,7 @@
 require('dotenv').config();
 
+import http from 'http';
+
 import express from 'express';
 
 import compression from 'compression';
@@ -10,9 +12,11 @@ import { Socket } from 'socket.io';
 
 import { createRoom } from './controllers/User';
 
+import packsHandler from './routes/Packs';
+
 const app = express();
 
-const server = require('http').Server(app);
+const server = http.createServer(app);
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const io = require('socket.io')(server);
@@ -28,7 +32,9 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.get('/', (_, res) => res.send('Hello World!'));
+app.use('/api/packs', packsHandler);
+
+app.get('/', (_, res) => res.sendFile(__dirname + '/index.html'));
 
 io.on('connection', (socket: Socket) => {
   socket.on('createRoom', (payload: any) => {
