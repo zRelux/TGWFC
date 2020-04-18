@@ -28,7 +28,7 @@ app.use(cors());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
-app.get('/', (req, res) => res.send('Hello World!'));
+app.get('/', (_, res) => res.send('Hello World!'));
 
 io.on('connection', (socket: Socket) => {
   socket.on('createRoom', (payload: any) => {
