@@ -1,19 +1,13 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.View`
-  flex: 1;
-  margin-left: ${({ theme }) => theme.spacing.double};
-  margin-right: ${({ theme }) => theme.spacing.double};
-  padding-bottom: ${({ theme }) => theme.spacing.multiple(25)};
-`;
+export const Container = styled.View``;
 
 export const StartHeader = styled.Text`
-  font-size: ${({ theme }) => theme.spacing.triple};
+  font-size: 34px;
+  font-weight: bold;
   width: ${({ theme }) => theme.spacing.multiple(34)};
 
   margin-top: ${({ theme }) => theme.spacing.multiple(5)};
-
-  font-size: ${({ theme }) => theme.spacing.multiple(4)};
   color: ${({ theme }) => theme.colors.primary};
 `;
 
@@ -33,7 +27,7 @@ interface RoundsTextProps {
 }
 
 export const RoundsText = styled.Text<RoundsTextProps>`
-  font-size: ${({ theme }) => theme.spacing.triple};
+  font-size: 26px;
 
   ${({ theme, bottom }) => bottom && `margin-bottom: ${theme.spacing.triple}`};
 `;
@@ -83,7 +77,7 @@ export const PackItem = styled.TouchableOpacity<PackItemProps>`
 export const PackItemText = styled.Text<PackItemProps>`
   margin-left: ${({ theme }) => theme.spacing.double};
 
-  font-size: ${({ theme }) => theme.spacing.triple};
+  font-size: 26px;
   color: ${({ theme, selected }) => (!selected ? theme.colors.primary : theme.colors.primaryText)};
 `;
 

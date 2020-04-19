@@ -22,8 +22,8 @@ export const Button = styled.TouchableOpacity<ButtonProps>`
 `;
 
 export const ButtonText = styled.Text`
-  font-size: ${({ theme }) => theme.spacing.multiple(3.5)};
-  color: #f2f2f2;
+  font-size: 28px;
+  color: ${({ theme }) => theme.colors.primaryText};
   opacity: 1;
 `;
 

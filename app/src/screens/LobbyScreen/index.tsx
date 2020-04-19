@@ -1,6 +1,5 @@
 import React from 'react';
 import { FlatList } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../..';
@@ -8,8 +7,12 @@ import { RootStackParamList } from '../..';
 import { GameButton, GameButtonText } from '../../components/Button';
 import { MaterialIcons } from '@expo/vector-icons';
 
+import ScreenContainer from '../../components/ScreenContainer';
+
+import useParticipant from '../../hooks/useParticipant';
+import { translate } from '../../translations';
+
 import {
-  Container,
   HostCard,
   HostHeader,
   HostHeaderText,
@@ -25,8 +28,6 @@ import {
   NoParticipantsText
 } from './styles';
 
-import useParticipant from '../../hooks/useParticipant';
-
 interface LobbyScreenProps {
   route: RouteProp<RootStackParamList, 'Lobby'>;
 }
@@ -39,53 +40,49 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ route }) => {
 
   return (
     <>
-      <SafeAreaView style={{ flex: 1, paddingBottom: 0 }}>
-        <Container>
-          <HostCard>
-            <HostHeader>
-              <HostHeaderText>Game host:</HostHeaderText>
-              <HostNameText>{hostUsername}</HostNameText>
-            </HostHeader>
-            <HostButtons>
-              <Separator />
-              <GameButton background="primaryText">
-                <GameButtonText color="primary">Share link to this match</GameButtonText>
-              </GameButton>
-              <Separator />
-              <GameButton background="primaryText">
-                <GameButtonText color="error">Leave the match</GameButtonText>
-              </GameButton>
-            </HostButtons>
-          </HostCard>
-          <ParticipantSection>
-            <ParticipantSectionHeader>Participants</ParticipantSectionHeader>
+      <ScreenContainer>
+        <HostCard>
+          <HostHeader>
+            <HostHeaderText>{translate('LobbyScreen.hostCardHeader')}</HostHeaderText>
+            <HostNameText>{hostUsername}</HostNameText>
+          </HostHeader>
+          <HostButtons>
             <Separator />
-            {empty ? (
-              <NoParticipants>
-                <NoParticipantsText>There are no participants yet.</NoParticipantsText>
-              </NoParticipants>
-            ) : (
-              <FlatList
-                data={participants}
-                renderItem={({ item }) => (
-                  <ParticipantCard>
-                    <ParticipantCardText>{item.username}</ParticipantCardText>
-                    <MaterialIcons name="close" size={32} color="#f2f2f2" />
-                  </ParticipantCard>
-                )}
-                keyExtractor={(pack) => pack.id}
-              />
-            )}
-          </ParticipantSection>
-        </Container>
-      </SafeAreaView>
+            <GameButton background="primaryText">
+              <GameButtonText color="primary">{translate('LobbyScreen.shareButton')}</GameButtonText>
+            </GameButton>
+            <Separator />
+            <GameButton background="primaryText">
+              <GameButtonText color="error">{translate('LobbyScreen.exitButton')}</GameButtonText>
+            </GameButton>
+          </HostButtons>
+        </HostCard>
+        <ParticipantSection>
+          <ParticipantSectionHeader>{translate('LobbyScreen.participantHeader')}</ParticipantSectionHeader>
+          <Separator />
+          {empty ? (
+            <NoParticipants>
+              <NoParticipantsText>{translate('LobbyScreen.noParticipantsLoader')}</NoParticipantsText>
+            </NoParticipants>
+          ) : (
+            <FlatList
+              data={participants}
+              renderItem={({ item }) => (
+                <ParticipantCard>
+                  <ParticipantCardText>{item.username}</ParticipantCardText>
+                  <MaterialIcons name="close" size={32} color="#f2f2f2" />
+                </ParticipantCard>
+              )}
+              keyExtractor={(pack) => pack.id}
+            />
+          )}
+        </ParticipantSection>
+      </ScreenContainer>
       <BottomBar>
         <GameButton background={empty ? 'tertiary' : 'primaryText'}>
-          {empty ? (
-            <GameButtonText color="primaryText">Waiting for partecipants...</GameButtonText>
-          ) : (
-            <GameButtonText color="primary">Start the game!</GameButtonText>
-          )}
+          <GameButtonText color="primaryText">
+            {empty ? translate('LobbyScreen.waitingButton') : translate('LobbyScreen.waitingButton')}
+          </GameButtonText>
         </GameButton>
       </BottomBar>
     </>

@@ -8,6 +8,15 @@ YellowBox.ignoreWarnings([
   'Unrecognized WebSocket connection option(s) `agent`, `perMessageDeflate`, `pfx`, `key`, `passphrase`, `cert`, `ca`, `ciphers`, `rejectUnauthorized`. Did you mean to put these under `headers`?'
 ]);
 
+(function () {
+  const _warning = console.warn;
+
+  console.warn = function (warnMessage: string, ...rest: any) {
+    if (!warnMessage.startsWith('Unrecognized WebSocket connection option(s) `agent`,'))
+      _warning.call(console, ...[warnMessage, rest]);
+  };
+})();
+
 interface SocketContext {
   socketAvailable: boolean;
   listen: <T extends object>(key: string, callback: (payload: T) => void) => object | void;

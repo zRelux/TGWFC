@@ -8,15 +8,18 @@ import theme from './theme';
 
 import { SocketProvider } from './contexts/Socket';
 import { ParticipantProvider } from './contexts/Participant';
+import { DataProvider } from './contexts/Data';
 
 import HomeScreen from './screens/HomeScreen';
 import StartScreen from './screens/StartScreen';
 import LobbyScreen from './screens/LobbyScreen';
+import SettingsScreen from './screens/SettingsScreen';
 
 export type RootStackParamList = {
   Home: undefined;
   Start: undefined;
   Lobby: { username?: string };
+  Settings: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -34,17 +37,20 @@ const App: React.FunctionComponent = () => {
     <ThemeProvider theme={theme}>
       <SocketProvider>
         <ParticipantProvider>
-          <NavigationContainer>
-            <Stack.Navigator
-              screenOptions={{
-                headerShown: false
-              }}
-            >
-              <Stack.Screen name="Home" component={HomeScreen} />
-              <Stack.Screen name="Start" component={StartScreen} />
-              <Stack.Screen name="Lobby" component={LobbyScreen} />
-            </Stack.Navigator>
-          </NavigationContainer>
+          <DataProvider>
+            <NavigationContainer>
+              <Stack.Navigator
+                screenOptions={{
+                  headerShown: false
+                }}
+              >
+                <Stack.Screen name="Home" component={HomeScreen} />
+                <Stack.Screen name="Start" component={StartScreen} />
+                <Stack.Screen name="Lobby" component={LobbyScreen} />
+                <Stack.Screen name="Settings" component={SettingsScreen} />
+              </Stack.Navigator>
+            </NavigationContainer>
+          </DataProvider>
         </ParticipantProvider>
       </SocketProvider>
     </ThemeProvider>
