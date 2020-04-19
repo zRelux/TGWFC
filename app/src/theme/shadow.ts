@@ -1,28 +1,7 @@
-export interface ShadowInterface {
-  shadowColor: string;
-  shadowOffset: {
-    width: number;
-    height: number;
-  };
-  shadowOpacity: number;
-  shadowRadius: number;
-  elevation: number;
-  shadowCss: string;
-}
+export type ShadowInterface = string;
 
-const shadow: ShadowInterface = {
-  shadowColor: '#000',
-  shadowOffset: {
-    width: 0,
-    height: 2
-  },
-  shadowOpacity: 0.23,
-  shadowRadius: 2.62,
-  elevation: 4,
-  shadowCss: `
-    elevation: 4;
-    box-shadow: 0 2px 2.62px rgba(0, 0, 0, 0.16);
-  `
-};
+const shadow: ShadowInterface = `
+  box-shadow: 3px 3px 4px #00000066;
+`;
 
 export default shadow;

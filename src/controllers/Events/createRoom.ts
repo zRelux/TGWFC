@@ -35,6 +35,8 @@ const createRoom = (payload: CreatePayload, socketId: string) => {
 
 export default (socket: Socket) => {
   socket.on('createRoom', (payload: CreatePayload) => {
+    console.log(payload);
+
     const { id } = createRoom(payload, socket.id);
 
     socket.join(id);
