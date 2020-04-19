@@ -26,3 +26,31 @@ export const ButtonText = styled.Text`
   color: #f2f2f2;
   opacity: 1;
 `;
+
+interface GameButtonProps {
+  background: string;
+}
+
+export const GameButton = styled.TouchableOpacity<GameButtonProps>`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+
+  height: ${({ theme }) => theme.spacing.multiple(6)};
+  background: ${({ theme, background }) => theme.colors[background]};
+  border-radius: ${({ theme }) => theme.spacing.double};
+`;
+
+interface GameButtonTextProps {
+  color: string;
+}
+
+export const GameButtonText = styled.Text<GameButtonTextProps>`
+  font-size: 20px;
+  color: ${({ theme, color }) => theme.colors[color]};
+  margin-top: ${({ theme }) => theme.spacing.oneAndHalf};
+  margin-bottom: ${({ theme }) => theme.spacing.oneAndHalf};
+`;

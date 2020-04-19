@@ -17,7 +17,8 @@ import {
   chosenCard,
   chosenSelectedWinner,
   finishGame,
-  disconnect
+  disconnect,
+  leaveRoom
 } from './controllers/Events';
 
 import packsHandler from './routes/Packs';
@@ -48,6 +49,7 @@ io.on('connection', (socket: Socket) => {
 
   createRoom(socket);
   joinRoom(socket, io);
+  leaveRoom(socket, io);
   startGame(socket, io);
   chosenCard(socket, io);
   chosenSelectedWinner(socket, io);

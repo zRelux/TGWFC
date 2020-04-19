@@ -5,12 +5,12 @@ import addWithBounds from '../../utils/addWithBounds';
 import assingCards from '../../utils/assingCards';
 
 type WinnerPayload = {
-  roomId: string;
-  winnerCard: string;
+  room_id: string;
+  winner_card: string;
 };
 
 const winnerRound = (payload: WinnerPayload, socketId: string) => {
-  const room = findRoom(payload.roomId);
+  const room = findRoom(payload.room_id);
 
   if (room) {
     room.roundsPlayed++;
@@ -21,7 +21,7 @@ const winnerRound = (payload: WinnerPayload, socketId: string) => {
 
     room.numberOfRounds--;
 
-    const winner = room.chosenCards.find(({ card }) => payload.winnerCard === card);
+    const winner = room.chosenCards.find(({ card }) => payload.winner_card === card);
 
     if (winner) {
       room.users.forEach(user => {

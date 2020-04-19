@@ -3,11 +3,11 @@ import socketIO, { Socket } from 'socket.io';
 import findRoom from '../../utils/findRoom';
 
 type FinishPayload = {
-  roomId: string;
+  room_id: string;
 };
 
 const finishGame = (payload: FinishPayload) => {
-  const room = findRoom(payload.roomId);
+  const room = findRoom(payload.room_id);
 
   if (room) {
     return room;

@@ -5,11 +5,11 @@ import assingCards from '../../utils/assingCards';
 import addWithBounds from '../../utils/addWithBounds';
 
 type StartPayload = {
-  roomId: string;
+  room_id: string;
 };
 
 export const startGame = (payload: StartPayload) => {
-  const room = findRoom(payload.roomId);
+  const room = findRoom(payload.room_id);
 
   if (room) {
     if (room.users.length < 2) {

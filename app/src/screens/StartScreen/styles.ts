@@ -20,6 +20,7 @@ export const StartHeader = styled.Text`
 export const RoundSelector = styled.View`
   display: flex;
   align-items: center;
+  justify-content: space-between;
   flex-direction: row;
 
   color: ${({ theme }) => theme.colors.primary};
@@ -27,21 +28,35 @@ export const RoundSelector = styled.View`
   margin-top: ${({ theme }) => theme.spacing.multiple(7)};
 `;
 
-export const RoundsText = styled.Text`
-  font-size: ${({ theme }) => theme.spacing.triple};
-  margin-right: ${({ theme }) => theme.spacing.multiple(5)};
+interface RoundsTextProps {
+  bottom?: boolean;
+}
 
-  margin-bottom: ${({ theme }) => theme.spacing.triple};
+export const RoundsText = styled.Text<RoundsTextProps>`
+  font-size: ${({ theme }) => theme.spacing.triple};
+
+  ${({ theme, bottom }) => bottom && `margin-bottom: ${theme.spacing.triple}`};
 `;
 
-export const Picker = styled.Picker`
+export const Picker = styled.View`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
   background: ${({ theme }) => theme.colors.primary};
   border-radius: ${({ theme }) => theme.spacing.double};
 
   height: ${({ theme }) => theme.spacing.multiple(8)};
-  width: 123px;
+  width: 124px;
 
   ${({ theme }) => theme.shadow};
+`;
+
+export const PickerText = styled.Text`
+  margin-right: ${({ theme }) => theme.spacing.double};
+  font-size: 24px;
+  color: white;
 `;
 
 export const PackContainer = styled.View`
@@ -83,33 +98,9 @@ export const BottomSheetContainer = styled.View`
   padding-left: ${({ theme }) => theme.spacing.multiple(4)};
   padding-right: ${({ theme }) => theme.spacing.multiple(4)};
 
+  padding-top: ${({ theme }) => theme.spacing.triple};
+
   box-shadow: 0px -3px 4px #00000066;
-`;
-
-interface CtaButtonProps {
-  empty?: boolean;
-}
-
-export const CtaButton = styled.TouchableOpacity<CtaButtonProps>`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-
-  width: 100%;
-
-  height: ${({ theme }) => theme.spacing.multiple(6)};
-  background: ${({ theme, empty }) => (empty ? theme.colors.tertiary : theme.colors.primaryText)};
-  border-radius: ${({ theme }) => theme.spacing.double};
-
-  margin-top: ${({ theme }) => theme.spacing.triple};
-`;
-
-export const CtaText = styled.Text<CtaButtonProps>`
-  font-size: 20px;
-  color: ${({ theme, empty }) => (empty ? theme.colors.primaryText : theme.colors.primary)};
-  margin-top: ${({ theme }) => theme.spacing.oneAndHalf};
-  margin-bottom: ${({ theme }) => theme.spacing.oneAndHalf};
 `;
 
 export const BackButton = styled.TouchableOpacity`

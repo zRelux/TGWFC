@@ -3,12 +3,12 @@ import socketIO, { Socket } from 'socket.io';
 import findRoom from '../../utils/findRoom';
 
 type ChosenCard = {
-  roomId: string;
-  chosenCard: string;
+  room_id: string;
+  chosen_card: string;
 };
 
 const chosenCard = (payload: ChosenCard, userId: string) => {
-  const room = findRoom(payload.roomId);
+  const room = findRoom(payload.room_id);
 
   if (room) {
     if (room.chooser)
@@ -16,11 +16,11 @@ const chosenCard = (payload: ChosenCard, userId: string) => {
         throw new Error('You are the chooser');
       }
 
-    room.chosenCards.push({ userId, card: payload.chosenCard });
+    room.chosenCards.push({ userId, card: payload.chosen_card });
 
     room.users.forEach(user => {
       if (user.userId === userId) {
-        user.cards = user.cards.filter(card => card !== payload.chosenCard);
+        user.cards = user.cards.filter(card => card !== payload.chosen_card);
       }
     });
 

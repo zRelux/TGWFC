@@ -2,7 +2,10 @@ import React, { useState, useEffect } from 'react';
 
 import { FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import RNPickerSelect, { defaultStyles } from 'react-native-picker-select';
+import RNPickerSelect from 'react-native-picker-select';
+
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../..';
 
 import {
   Container,
@@ -10,20 +13,20 @@ import {
   RoundSelector,
   RoundsText,
   Picker,
+  PickerText,
   PackContainer,
   PackItem,
   PackItemText,
   BottomSheetContainer,
-  CtaButton,
-  CtaText,
   BackButton,
   BackText
 } from './styles';
 
 import fetchBff from '../../utils/fetchBff';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../..';
+
+import { Entypo } from '@expo/vector-icons';
 import useSocket from '../../hooks/useSocket';
+import { GameButton, GameButtonText } from '../../components/Button';
 
 type Pack = {
   id: string;
@@ -34,7 +37,7 @@ interface StartScreenProps {
   navigation: StackNavigationProp<RootStackParamList, 'Start'>;
 }
 
-const values = [
+const values: { label: string; value: number }[] = [
   {
     label: '5',
     value: 5
@@ -47,17 +50,14 @@ const values = [
     label: '15',
     value: 15
   },
-  ,
   {
     label: '20',
     value: 20
   },
-  ,
   {
     label: '25',
     value: 25
   },
-  ,
   {
     label: '30',
     value: 30
@@ -103,12 +103,12 @@ const StartScreen: React.FunctionComponent<StartScreenProps> = ({ navigation }) 
     if (!empty) {
       send('createRoom', {
         username: 'Test Username',
-        number_of_rounds: 10,
+        number_of_rounds: selectedValue,
         packs: selectedPacks
       });
 
       if (navigation) {
-        navigation.navigate('Lobby');
+        navigation.navigate('Lobby', { username: 'My new username' });
       }
     }
   };
@@ -122,52 +122,27 @@ const StartScreen: React.FunctionComponent<StartScreenProps> = ({ navigation }) 
             <RoundsText>Number of rounds</RoundsText>
             <RNPickerSelect
               placeholder={{
-                label: 'Select a number or add another...',
+                label: 'Select the number of rounds',
                 value: null,
-                color: 'red'
+                color: 'black'
               }}
               items={values}
               onValueChange={(value) => {
                 setSelectedValue(value);
               }}
-              style={{
-                ...pickerSelectStyles,
-                iconContainer: {
-                  top: 20,
-                  right: 10
-                },
-                placeholder: {
-                  color: 'purple',
-                  fontSize: 12,
-                  fontWeight: 'bold'
-                }
-              }}
-              value={selectedValue}
-              Icon={() => {
-                return (
-                  <View
-                    style={{
-                      backgroundColor: 'transparent',
-                      borderTopWidth: 10,
-                      borderTopColor: 'gray',
-                      borderRightWidth: 10,
-                      borderRightColor: 'transparent',
-                      borderLeftWidth: 10,
-                      borderLeftColor: 'transparent',
-                      width: 0,
-                      height: 0
-                    }}
-                  />
-                );
-              }}
-            />
+            >
+              <Picker>
+                <PickerText>{selectedValue}</PickerText>
+                <Entypo name="chevron-down" color="white" size={32}></Entypo>
+              </Picker>
+            </RNPickerSelect>
           </RoundSelector>
           <PackContainer>
-            <RoundsText>Card packs</RoundsText>
+            <RoundsText bottom>Card packs</RoundsText>
             <FlatList
               data={packs}
               renderItem={({ item }) => (
-                <PackItem key={item.id} onPress={addPack(item.id)} selected={selectedPacks.includes(item.id)}>
+                <PackItem onPress={addPack(item.id)} selected={selectedPacks.includes(item.id)}>
                   <PackItemText selected={selectedPacks.includes(item.id)}>{item.name}</PackItemText>
                 </PackItem>
               )}
@@ -177,9 +152,13 @@ const StartScreen: React.FunctionComponent<StartScreenProps> = ({ navigation }) 
         </Container>
       </SafeAreaView>
       <BottomSheetContainer>
-        <CtaButton empty={empty} onPress={createOnClick}>
-          {empty ? <CtaText empty>Select at least a card pack</CtaText> : <CtaText>Create game</CtaText>}
-        </CtaButton>
+        <GameButton background={empty ? 'tertiary' : 'primaryText'} onPress={createOnClick}>
+          {empty ? (
+            <GameButtonText color="primaryText">Select at least a card pack</GameButtonText>
+          ) : (
+            <GameButtonText color="primary">Create game</GameButtonText>
+          )}
+        </GameButton>
         <BackButton onPress={goBack}>
           <BackText>Go Back</BackText>
         </BackButton>

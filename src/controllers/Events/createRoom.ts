@@ -6,7 +6,7 @@ import shuffle from '../../utils/shuffle';
 
 type CreatePayload = {
   username: string;
-  numberOfRounds: number;
+  number_of_rounds: number;
   packs: string[];
 };
 
@@ -24,7 +24,7 @@ const createRoom = (payload: CreatePayload, socketId: string) => {
     cardsToGive: { index: 0, cards: shuffle(cardsToGive.flat(1)) },
     chosenCards: [],
     roundsPlayed: 0,
-    numberOfRounds: payload.numberOfRounds,
+    numberOfRounds: payload.number_of_rounds,
     users: [{ username: payload.username, userId: socketId, points: 0, cards: [] }]
   };
 

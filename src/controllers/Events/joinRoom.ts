@@ -34,7 +34,9 @@ export default (socket: Socket, io: socketIO.Server) => {
       io.to(room.id).emit('joinRoomReply', {
         new_user: {
           id: socket.id,
-          username: payload.username
+          username: payload.username,
+          points: 0,
+          cards: []
         }
       });
     } catch (error) {
