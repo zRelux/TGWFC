@@ -15,6 +15,8 @@ import StartScreen from './screens/StartScreen';
 import LobbyScreen from './screens/LobbyScreen';
 import SettingsScreen from './screens/SettingsScreen';
 
+import { getUsername } from './utils/storage';
+
 export type RootStackParamList = {
   Home: undefined;
   Start: undefined;
@@ -26,11 +28,25 @@ const Stack = createStackNavigator<RootStackParamList>();
 
 const App: React.FunctionComponent = () => {
   const [ready, setReady] = useState(false);
+  const [usernameInStore, setUsernameInStore] = useState('');
 
   const appLoad = async () => {};
 
   if (!ready) {
-    return <AppLoading startAsync={appLoad} onFinish={() => setReady(true)} />;
+    return (
+      <AppLoading
+        startAsync={appLoad}
+        onFinish={async () => {
+          let savedUsername = '';
+          try {
+            savedUsername = await getUsername();
+          } catch (error) {}
+
+          setUsernameInStore(savedUsername);
+          setReady(true);
+        }}
+      />
+    );
   }
 
   return (
@@ -43,6 +59,7 @@ const App: React.FunctionComponent = () => {
                 screenOptions={{
                   headerShown: false
                 }}
+                initialRouteName={usernameInStore !== '' ? 'Home' : 'Settings'}
               >
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Start" component={StartScreen} />

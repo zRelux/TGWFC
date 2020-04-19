@@ -94,14 +94,4 @@ export const NoParticipantsText = styled.Text`
   color: ${({ theme }) => theme.colors.primary};
 `;
 
-export const BottomBar = styled.View`
-  margin-top: auto;
-  padding-top: ${({ theme }) => theme.spacing.triple};
-  padding-right: ${({ theme }) => theme.spacing.double};
-  padding-left: ${({ theme }) => theme.spacing.double};
-  padding-bottom: ${({ theme }) => theme.spacing.multiple(4)};
-
-  background: ${({ theme }) => theme.colors.primary};
-  box-shadow: 0px -3px 4px #00000066;
-  border-radius: ${({ theme }) => theme.spacing.double};
-`;
+export const RemoveUserButton = styled.TouchableOpacity``;

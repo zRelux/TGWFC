@@ -46,8 +46,6 @@ app.use('/api/packs', packsHandler);
 app.get('/', (_, res) => res.sendFile(__dirname + '/index.html'));
 
 io.on('connection', (socket: Socket) => {
-  console.log('New connection');
-
   createRoom(socket);
   joinRoom(socket, io);
   leaveRoom(socket, io);
@@ -61,7 +59,7 @@ io.on('connection', (socket: Socket) => {
 });
 
 const appInit = async () => {
-  console.log(`Example app listening on port ${port}!`);
+  console.log(`App listening on port ${port}!`);
 };
 
 server.listen(port, appInit);

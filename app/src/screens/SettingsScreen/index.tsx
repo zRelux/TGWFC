@@ -1,25 +1,57 @@
 import React from 'react';
-import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { Button, ButtonText } from '../../components/Button';
+import { StackNavigationProp } from '@react-navigation/stack';
+import { RootStackParamList } from '../..';
 
 import { translate } from '../../translations';
 
-import { SettingContainer, UsernameInputText, UsernameInput } from './styles';
+import { Content } from '../../components/ScreenContainer';
+import ScreenContainer from '../../components/ScreenContainer';
+import BottomSheet from '../../components/BottomSheet';
+import { StartHeader } from '../StartScreen/styles';
+import useData from '../../hooks/useData';
 
-interface SettingsScreenProps {}
+import { UsernameInputText, UsernameInput, DisclaimerText, DisclaimerView } from './styles';
 
-const SettingsScreen: React.FunctionComponent<SettingsScreenProps> = () => {
+interface SettingsScreenProps {
+  navigation: StackNavigationProp<RootStackParamList, 'Settings'>;
+}
+
+const SettingsScreen: React.FunctionComponent<SettingsScreenProps> = ({ navigation }) => {
+  const { username, setUsername } = useData();
+  const empty = username === '';
+
+  const onChangeUsername = (newUsername: string) => {
+    setUsername(newUsername);
+  };
+
+  const saveName = () => {
+    navigation.navigate('Home');
+  };
+
   return (
-    <SafeAreaView style={{ flex: 1, paddingBottom: 0 }}>
-      <SettingContainer>
+    <ScreenContainer>
+      <Content>
+        <StartHeader>{translate('SettingsScreen.pageHeader')}</StartHeader>
         <UsernameInputText>{translate('SettingsScreen.inputHeader')}</UsernameInputText>
-        <UsernameInput placeholder={translate('SettingsScreen.inputPlaceholder')} />
-        <Button color="primary">
-          <ButtonText>{translate('SettingsScreen.saveButton')}</ButtonText>
-        </Button>
-      </SettingContainer>
-    </SafeAreaView>
+        <UsernameInput value={username} onChangeText={onChangeUsername} />
+        <DisclaimerView>
+          <DisclaimerText>{translate('SettingsScreen.disclaimer.first')}</DisclaimerText>
+          <DisclaimerText bold>{translate('SettingsScreen.disclaimer.boldFirst')}</DisclaimerText>
+          <DisclaimerText>{translate('SettingsScreen.disclaimer.second')}</DisclaimerText>
+          <DisclaimerText bold>{translate('SettingsScreen.disclaimer.secondBold')}</DisclaimerText>
+        </DisclaimerView>
+      </Content>
+      <BottomSheet
+        goBackFalsy={empty}
+        falsyAction={empty}
+        callOnTruth={saveName}
+        copy={{
+          actionFalsy: translate('SettingsScreen.noSaveButton'),
+          actionTruthy: translate('SettingsScreen.saveButton')
+        }}
+      />
+    </ScreenContainer>
   );
 };
 

@@ -1,5 +1,5 @@
 const domain = 'https://cah-back.herokuapp.com';
-export const socketEndpoint = 'http://localhost:3000'; //domain;
+export const socketEndpoint = 'http://localhost:3000'; // domain; //
 const api = domain + '/api';
 
 export default async (path: string) => {

@@ -18,11 +18,13 @@ YellowBox.ignoreWarnings([
 })();
 
 interface SocketContext {
+  id?: string;
   socketAvailable: boolean;
   listen: <T extends object>(key: string, callback: (payload: T) => void) => object | void;
   send: <T extends object>(key: string, payload: T) => void;
 }
 const SocketContext = React.createContext<SocketContext>({
+  id: '',
   socketAvailable: false,
   listen: () => {},
   send: () => {}
@@ -60,7 +62,11 @@ export const SocketProvider: React.FunctionComponent<SocketProviderProps> = ({ c
     }
   };
 
-  return <SocketContext.Provider value={{ socketAvailable, listen, send }}>{children}</SocketContext.Provider>;
+  return (
+    <SocketContext.Provider value={{ id: socket?.id, socketAvailable, listen, send }}>
+      {children}
+    </SocketContext.Provider>
+  );
 };
 
 export default SocketContext;

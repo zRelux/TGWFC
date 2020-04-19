@@ -1,6 +1,6 @@
 export default {
   HomeScreen: {
-    header: 'The game with Funny Cards',
+    header: 'The Game with Funny Cards',
     startButton: 'Start a game',
     joinButton: 'Partecipate',
     settingsButton: 'Settings'
@@ -20,11 +20,21 @@ export default {
     participantHeader: 'Participants',
     noParticipantsLoader: 'There are no participants yet.',
     waitingButton: 'Waiting for partecipants...',
-    startButton: 'Start the game!'
+    startButton: 'Start the game!',
+    waitHostButton: 'Waiting for host…'
   },
   SettingsScreen: {
-    inputHeader: 'Insert your username',
-    inputPlaceholder: 'Insert your username here...',
-    saveButton: 'Save username'
+    pageHeader: 'Settings',
+    inputHeader: 'Your name in game',
+    disclaimer: {
+      first: 'The Game With Funny Cards or TGWFC is a ',
+      boldFirst: 'Cards Against Humanity',
+      second:
+        ' clone. You can buy the game at their website or print the cardsyourself. TGWFC is completely free to use and is in no way endorsed or sponsored by ',
+      secondBold: `cardsagainsthumanity.com.`
+    },
+    noSaveButton: 'Please insert your username',
+    saveButton: 'Save',
+    goBackButton: 'Go Back'
   }
 };

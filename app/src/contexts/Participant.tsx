@@ -1,55 +1,91 @@
 import React, { useEffect, useState } from 'react';
 import useSocket from '../hooks/useSocket';
 
-type Participant = {
-  id: string;
-  username: string;
-};
-
-type User = {
+export type User = {
   userId: string;
   username: string;
   points: number;
   cards: string[];
+  host: boolean;
 };
 
 type DisconnectedPayload = {
   user_left: User;
+  new_host?: User;
 };
 
 type JoinRoomPayload = {
-  new_user: Participant;
+  room_host: User;
+  new_user: User;
 };
 
 interface ParticipantContext {
-  participants: Participant[];
+  hostUser: User;
+  participants: User[];
 }
 
 const ParticipantContext = React.createContext<ParticipantContext>({
-  participants: []
+  participants: [],
+  hostUser: {
+    userId: '',
+    username: '',
+    points: 0,
+    cards: [],
+    host: false
+  }
 });
 
 interface ParticipantProviderProps {}
 
 export const ParticipantProvider: React.FunctionComponent<ParticipantProviderProps> = ({ children }) => {
-  const [participants, setParticipants] = useState<Participant[]>([]);
+  const [hostUser, setHostUser] = useState<User>({
+    userId: '',
+    username: '',
+    points: 0,
+    cards: [],
+    host: false
+  });
+  const [participants, setParticipants] = useState<User[]>([]);
   const { listen, socketAvailable } = useSocket();
 
   useEffect(() => {
-    listen<JoinRoomPayload>('joinRoomReply', ({ new_user }) => {
-      setParticipants((prevPartecipants) => [...prevPartecipants, new_user]);
-    });
+    if (socketAvailable) {
+      listen<JoinRoomPayload>('joinRoomReply', ({ room_host, new_user }) => {
+        setHostUser(room_host);
+        setParticipants((prevPartecipants) => [...prevPartecipants, new_user]);
+      });
 
-    listen<DisconnectedPayload>('userDisconnected', ({ user_left }) => {
-      const tmpArr = [...participants];
+      listen<DisconnectedPayload>('kickUserReply', ({ user_left }) => {
+        const tmpArr = [...participants];
 
-      const index = tmpArr.findIndex((participant) => participant.id === user_left.userId);
+        const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
 
-      setParticipants([...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)]);
-    });
+        setParticipants([...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)]);
+      });
+
+      listen<DisconnectedPayload>('leaveRoomReply', ({ new_host, user_left }) => {
+        const tmpArr = [...participants];
+
+        const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
+
+        if (new_host) {
+          setHostUser(new_host);
+        }
+
+        setParticipants([...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)]);
+      });
+
+      listen<DisconnectedPayload>('userDisconnected', ({ user_left }) => {
+        const tmpArr = [...participants];
+
+        const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
+
+        setParticipants([...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)]);
+      });
+    }
   }, [socketAvailable]);
 
-  return <ParticipantContext.Provider value={{ participants }}>{children}</ParticipantContext.Provider>;
+  return <ParticipantContext.Provider value={{ hostUser, participants }}>{children}</ParticipantContext.Provider>;
 };
 
 export default ParticipantContext;

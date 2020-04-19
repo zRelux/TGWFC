@@ -32,12 +32,12 @@ const joinRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser] => {
 export default (socket: Socket, io: socketIO.Server) => {
   socket.on('joinRoom', (payload: JoinPayload) => {
     try {
-      const [room, hostUser] = joinRoom(payload, socket.id);
+      const [room, user] = joinRoom(payload, socket.id);
 
       socket.join(room.id);
 
       io.to(room.id).emit('joinRoomReply', {
-        room_host: hostUser,
+        room_host: user,
         new_user: {
           id: socket.id,
           username: payload.username,

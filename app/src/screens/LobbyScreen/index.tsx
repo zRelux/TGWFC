@@ -2,14 +2,21 @@ import React from 'react';
 import { FlatList } from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../..';
 
 import { GameButton, GameButtonText } from '../../components/Button';
+import BottomSheet from '../../components/BottomSheet';
+
 import { MaterialIcons } from '@expo/vector-icons';
 
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenContainer, { Content } from '../../components/ScreenContainer';
 
+import useData from '../../hooks/useData';
+import useSocket from '../../hooks/useSocket';
 import useParticipant from '../../hooks/useParticipant';
+import { User } from '../../contexts/Participant';
+
 import { translate } from '../../translations';
 
 import {
@@ -23,24 +30,44 @@ import {
   ParticipantSectionHeader,
   ParticipantCard,
   ParticipantCardText,
-  BottomBar,
   NoParticipants,
-  NoParticipantsText
+  NoParticipantsText,
+  RemoveUserButton
 } from './styles';
 
 interface LobbyScreenProps {
+  navigation: StackNavigationProp<RootStackParamList, 'Lobby'>;
   route: RouteProp<RootStackParamList, 'Lobby'>;
 }
 
-const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ route }) => {
-  const hostUsername = route.params && route.params.username ? route.params.username : 'TestFra';
-  const { participants } = useParticipant();
+const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, route }) => {
+  const { roomId } = useData();
+  const { participants, hostUser } = useParticipant();
+  const { send, id } = useSocket();
+
+  const hostUsername = route.params && route.params.username ? route.params.username : hostUser.username;
+  const iAmHost = hostUser && hostUser.userId === id;
 
   const empty = participants.length === 0;
 
+  const kickUser = (userToKick: User) => () => {
+    send('kickUser', {
+      user_id: userToKick.userId,
+      roomId
+    });
+  };
+
+  const leaveMatch = () => {
+    send('leaveRoom', {
+      roomId
+    });
+
+    navigation.goBack();
+  };
+
   return (
-    <>
-      <ScreenContainer>
+    <ScreenContainer>
+      <Content>
         <HostCard>
           <HostHeader>
             <HostHeaderText>{translate('LobbyScreen.hostCardHeader')}</HostHeaderText>
@@ -52,7 +79,7 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ route }) => {
               <GameButtonText color="primary">{translate('LobbyScreen.shareButton')}</GameButtonText>
             </GameButton>
             <Separator />
-            <GameButton background="primaryText">
+            <GameButton background="primaryText" onPress={leaveMatch}>
               <GameButtonText color="error">{translate('LobbyScreen.exitButton')}</GameButtonText>
             </GameButton>
           </HostButtons>
@@ -68,24 +95,30 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ route }) => {
             <FlatList
               data={participants}
               renderItem={({ item }) => (
-                <ParticipantCard>
+                <ParticipantCard key={item.userId}>
                   <ParticipantCardText>{item.username}</ParticipantCardText>
-                  <MaterialIcons name="close" size={32} color="#f2f2f2" />
+                  {iAmHost && (
+                    <RemoveUserButton onPress={kickUser(item)}>
+                      <MaterialIcons name="close" size={32} color="#f2f2f2" />
+                    </RemoveUserButton>
+                  )}
                 </ParticipantCard>
               )}
-              keyExtractor={(pack) => pack.id}
+              keyExtractor={(partecipant) => partecipant.userId}
             />
           )}
         </ParticipantSection>
-      </ScreenContainer>
-      <BottomBar>
-        <GameButton background={empty ? 'tertiary' : 'primaryText'}>
-          <GameButtonText color="primaryText">
-            {empty ? translate('LobbyScreen.waitingButton') : translate('LobbyScreen.waitingButton')}
-          </GameButtonText>
-        </GameButton>
-      </BottomBar>
-    </>
+      </Content>
+      <BottomSheet
+        goBack={false}
+        falsyAction={empty}
+        callOnTruth={() => {}}
+        copy={{
+          actionFalsy: translate('LobbyScreen.waitingButton'),
+          actionTruthy: iAmHost ? translate('LobbyScreen.startButton') : translate('LobbyScreen.waitHostButton')
+        }}
+      />
+    </ScreenContainer>
   );
 };
 

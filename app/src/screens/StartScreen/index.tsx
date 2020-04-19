@@ -6,8 +6,9 @@ import RNPickerSelect from 'react-native-picker-select';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../..';
 
-import { GameButton, GameButtonText } from '../../components/Button';
-import ScreenContainer from '../../components/ScreenContainer';
+import ScreenContainer, { Content } from '../../components/ScreenContainer';
+import BottomSheet from '../../components/BottomSheet';
+import { ScreenHeader } from '../../components/ScreenHeader';
 
 import { Entypo } from '@expo/vector-icons';
 
@@ -18,19 +19,7 @@ import { translate } from '../../translations';
 
 import values from './data';
 
-import {
-  StartHeader,
-  RoundSelector,
-  RoundsText,
-  Picker,
-  PickerText,
-  PackContainer,
-  PackItem,
-  PackItemText,
-  BottomSheetContainer,
-  BackButton,
-  BackText
-} from './styles';
+import { RoundSelector, RoundsText, Picker, PickerText, PackContainer, PackItem, PackItemText } from './styles';
 
 interface StartScreenProps {
   navigation: StackNavigationProp<RootStackParamList, 'Start'>;
@@ -57,28 +46,22 @@ const StartScreen: React.FunctionComponent<StartScreenProps> = ({ navigation }) 
     setSelectedPacks(tmpArr);
   };
 
-  const goBack = () => {
-    navigation.goBack();
-  };
-
   const createOnClick = () => {
-    if (!empty) {
-      send('createRoom', {
-        username,
-        number_of_rounds: selectedValue,
-        packs: selectedPacks
-      });
+    send('createRoom', {
+      username,
+      number_of_rounds: selectedValue,
+      packs: selectedPacks
+    });
 
-      if (navigation) {
-        navigation.navigate('Lobby', { username });
-      }
+    if (navigation) {
+      navigation.navigate('Lobby', { username });
     }
   };
 
   return (
-    <>
-      <ScreenContainer>
-        <StartHeader>{translate('StartScreen.setupHeader')}</StartHeader>
+    <ScreenContainer>
+      <Content>
+        <ScreenHeader bottom={5}>{translate('StartScreen.setupHeader')}</ScreenHeader>
         <RoundSelector>
           <RoundsText>{translate('StartScreen.roundsHeader')}</RoundsText>
           <RNPickerSelect
@@ -106,18 +89,16 @@ const StartScreen: React.FunctionComponent<StartScreenProps> = ({ navigation }) 
             keyExtractor={(pack) => pack.id}
           />
         </PackContainer>
-      </ScreenContainer>
-      <BottomSheetContainer>
-        <GameButton background={empty ? 'tertiary' : 'primaryText'} onPress={createOnClick}>
-          <GameButtonText color={empty ? 'primaryText' : 'primary'}>
-            {empty ? translate('StartScreen.createRoomButtonEmpty') : translate('StartScreen.createRoomButton')}
-          </GameButtonText>
-        </GameButton>
-        <BackButton onPress={goBack}>
-          <BackText>{translate('StartScreen.goBackButton')}</BackText>
-        </BackButton>
-      </BottomSheetContainer>
-    </>
+      </Content>
+      <BottomSheet
+        falsyAction={empty}
+        callOnTruth={createOnClick}
+        copy={{
+          actionFalsy: translate('StartScreen.createRoomButtonEmpty'),
+          actionTruthy: translate('StartScreen.createRoomButton')
+        }}
+      />
+    </ScreenContainer>
   );
 };
 

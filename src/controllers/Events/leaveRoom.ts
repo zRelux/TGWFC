@@ -2,12 +2,13 @@ import socketIO, { Socket } from 'socket.io';
 
 import findRoom from '../../utils/findRoom';
 import { RoomUser, Room } from '../../db';
+import addWithBounds from '../../utils/addWithBounds';
 
 type JoinPayload = {
   room_id: string;
 };
 
-const leaveRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser] => {
+const leaveRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser, RoomUser?] => {
   const room = findRoom(payload.room_id);
 
   if (room) {
@@ -15,6 +16,13 @@ const leaveRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser] => 
     const user = room.users[index];
 
     room.users = [...room.users.slice(0, index), ...room.users.slice(index + 1)];
+
+    if (user.host === true) {
+      const nextHost = room.users[addWithBounds(index, room.users.length)];
+      nextHost.host = true;
+
+      return [room, user, nextHost];
+    }
 
     return [room, user];
   } else {
@@ -25,11 +33,12 @@ const leaveRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser] => 
 export default (socket: Socket, io: socketIO.Server) => {
   socket.on('leaveRoom', (payload: JoinPayload) => {
     try {
-      const [room, user] = leaveRoom(payload, socket.id);
+      const [room, user, newHost] = leaveRoom(payload, socket.id);
 
       socket.leave(room.id);
 
       io.to(room.id).emit('leaveRoomReply', {
+        new_host: newHost,
         user_left: user
       });
     } catch (error) {

@@ -9,8 +9,6 @@ export const Button = styled.TouchableOpacity<ButtonProps>`
   align-items: center;
   justify-content: center;
 
-  margin-left: ${({ theme }) => theme.spacing.double};
-  margin-right: ${({ theme }) => theme.spacing.double};
   margin-bottom: ${({ theme }) => theme.spacing.multiple(4)};
 
   background: ${({ theme, color }) => theme.colors[color]};

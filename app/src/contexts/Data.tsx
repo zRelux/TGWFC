@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import fetchBff from '../utils/fetchBff';
+import useSocket from '../hooks/useSocket';
+import { saveUsername, getUsername } from '../utils/storage';
 
 type Pack = {
   id: string;
@@ -10,24 +12,31 @@ interface DataContext {
   roomId: string;
   username: string;
   packs: Pack[];
-  // setRoomId: (newRoomId: string) => void;
-  // setUsername: (newUsername: string) => void;
+  setUsername: (newUsername: string) => void;
+}
+
+interface CreateRoomReplyPayload {
+  room: {
+    id: string;
+    url: string;
+  };
 }
 
 const DataContext = React.createContext<DataContext>({
   roomId: '',
   username: '',
-  packs: []
-  // setRoomId: () => void,
-  // setUsername: () => void,
+  packs: [],
+  setUsername: () => {}
 });
 
 interface DataProviderProps {}
 
 export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ children }) => {
   const [roomId, setRoomId] = useState('');
-  const [username, setUsername] = useState('Test username');
+  const [username, setUsername] = useState('');
   const [packs, setPacks] = useState<Pack[]>([]);
+
+  const { listen, socketAvailable } = useSocket();
 
   const fetchPacks = async () => {
     const fetchedPacks = await fetchBff('/packs');
@@ -35,11 +44,33 @@ export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ child
     setPacks(fetchedPacks.packs);
   };
 
+  const getSavedUsername = async () => {
+    let savedUsername = '';
+    try {
+      savedUsername = await getUsername();
+    } catch (error) {}
+
+    setUsername(savedUsername);
+  };
+
+  useEffect(() => {
+    if (username !== '') saveUsername(username);
+  }, [username]);
+
+  useEffect(() => {
+    if (socketAvailable) {
+      listen<CreateRoomReplyPayload>('createRoomReply', ({ room }) => {
+        setRoomId(room.id);
+      });
+    }
+  }, [socketAvailable]);
+
   useEffect(() => {
     fetchPacks();
+    getSavedUsername();
   }, []);
 
-  return <DataContext.Provider value={{ packs, roomId, username }}>{children}</DataContext.Provider>;
+  return <DataContext.Provider value={{ packs, roomId, username, setUsername }}>{children}</DataContext.Provider>;
 };
 
 export default DataContext;

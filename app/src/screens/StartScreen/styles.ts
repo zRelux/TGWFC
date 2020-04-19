@@ -1,7 +1,5 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.View``;
-
 export const StartHeader = styled.Text`
   font-size: 34px;
   font-weight: bold;
@@ -18,8 +16,6 @@ export const RoundSelector = styled.View`
   flex-direction: row;
 
   color: ${({ theme }) => theme.colors.primary};
-
-  margin-top: ${({ theme }) => theme.spacing.multiple(7)};
 `;
 
 interface RoundsTextProps {
@@ -79,29 +75,4 @@ export const PackItemText = styled.Text<PackItemProps>`
 
   font-size: 26px;
   color: ${({ theme, selected }) => (!selected ? theme.colors.primary : theme.colors.primaryText)};
-`;
-
-export const BottomSheetContainer = styled.View`
-  display: flex;
-  align-items: center;
-
-  height: ${({ theme }) => theme.spacing.multiple(20)};
-  background: ${({ theme }) => theme.colors.primary};
-  border-radius: ${({ theme }) => theme.spacing.double};
-
-  padding-left: ${({ theme }) => theme.spacing.multiple(4)};
-  padding-right: ${({ theme }) => theme.spacing.multiple(4)};
-
-  padding-top: ${({ theme }) => theme.spacing.triple};
-
-  box-shadow: 0px -3px 4px #00000066;
-`;
-
-export const BackButton = styled.TouchableOpacity`
-  margin-top: ${({ theme }) => theme.spacing.triple};
-`;
-
-export const BackText = styled.Text`
-  font-size: 20px;
-  color: ${({ theme }) => theme.colors.primaryText};
 `;
