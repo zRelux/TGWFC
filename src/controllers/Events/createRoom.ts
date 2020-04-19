@@ -25,7 +25,7 @@ const createRoom = (payload: CreatePayload, socketId: string) => {
     chosenCards: [],
     roundsPlayed: 0,
     numberOfRounds: payload.number_of_rounds,
-    users: [{ username: payload.username, userId: socketId, points: 0, cards: [] }]
+    users: [{ username: payload.username, userId: socketId, points: 0, cards: [], host: true }]
   };
 
   rooms.push(roomToAdd);

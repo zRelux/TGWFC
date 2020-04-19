@@ -73,6 +73,10 @@
         console.log('leaveRoomReply', payload);
       });
 
+      Window.connectionSocket.on('kickUserReply', payload => {
+        console.log('kickUserReply', payload);
+      });
+
       Window.connectionSocket.on('startGameReply', payload => {
         console.log('startGameReply', payload);
       });

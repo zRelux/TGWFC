@@ -125,6 +125,7 @@ export type RoomUser = {
   userId: string;
   points: number;
   cards: string[];
+  host: boolean;
 };
 
 export type Room = {
