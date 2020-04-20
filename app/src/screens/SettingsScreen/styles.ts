@@ -20,6 +20,7 @@ export const UsernameInputText = styled.Text`
 export const UsernameInput = styled.TextInput`
   margin-top: ${({ theme }) => theme.spacing.triple};
   padding: ${({ theme }) => theme.spacing.single};
+  padding-left: ${({ theme }) => theme.spacing.double};
 
   height: ${({ theme }) => theme.spacing.multiple(8)};
 

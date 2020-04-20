@@ -35,6 +35,7 @@ export const ChooseCard = styled.View<ChooseCardProps>`
 
   margin-top: ${({ theme }) => theme.spacing.double};
   margin-right: ${({ theme }) => theme.spacing.double};
+  margin-bottom: ${({ theme }) => theme.spacing.double};
   margin-left: ${({ theme }) => theme.spacing.double};
 
   height: ${({ theme }) => theme.spacing.multiple(27.5)};

@@ -1,16 +1,19 @@
 import socketIO, { Socket } from 'socket.io';
 
 import findRoom from '../../utils/findRoom';
+import rooms, { updateRooms } from '../../db';
 
 type FinishPayload = {
   room_id: string;
 };
 
 const finishGame = (payload: FinishPayload) => {
-  const room = findRoom(payload.room_id);
+  const roomToClose = findRoom(payload.room_id);
 
-  if (room) {
-    return room;
+  if (roomToClose) {
+    updateRooms(rooms.filter(room => room.id !== roomToClose.id));
+
+    return roomToClose;
   } else {
     throw new Error('Room not found');
   }

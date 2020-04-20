@@ -41,7 +41,8 @@ export default (socket: Socket) => {
 
     socket.emit('createRoomReply', {
       room: {
-        id
+        id,
+        host: { username: payload.username, userId: socket.id, points: 0, cards: [], host: true }
       }
     });
   });

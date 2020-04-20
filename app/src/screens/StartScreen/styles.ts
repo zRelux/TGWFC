@@ -25,7 +25,7 @@ interface RoundsTextProps {
 export const RoundsText = styled.Text<RoundsTextProps>`
   font-size: 26px;
 
-  ${({ theme, bottom }) => bottom && `margin-bottom: ${theme.spacing.triple}`};
+  ${({ theme, bottom }) => bottom && `margin-bottom: ${theme.spacing.double}`};
 `;
 
 export const Picker = styled.View`

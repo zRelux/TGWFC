@@ -52,7 +52,7 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
   const { participants } = useParticipant();
   const { send, listen, socketAvailable } = useSocket();
 
-  const enableChoose = myTurn ? (chosenCards.length === participants.length ? true : false) : true;
+  const enableChoose = myTurn ? (chosenCards.length === participants.length - 1 ? true : false) : true;
   const showChosenCards = chosenCards.length === participants.length - 1;
 
   useEffect(() => {
@@ -114,7 +114,7 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
           </ChooserTextSection>
         )}
       </Content>
-      <ScrollView style={{ height: 300 }}>
+      <ScrollView>
         {!(myTurn && chosenCards.length === 0) && (
           <FlatList
             showsHorizontalScrollIndicator={false}
@@ -125,7 +125,7 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
                 {enableChoose && (
                   <>
                     <ChooseCardText>{item}</ChooseCardText>
-                    {!showChosenCards && (
+                    {!enableChoose && (
                       <ChooseCardButton selected={selectedCard === item} onPress={selectCard(item, myTurn)}>
                         <ChooseCardButtonText selected={selectedCard === item}>
                           {selectedCard === item

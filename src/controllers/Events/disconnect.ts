@@ -1,6 +1,6 @@
 import socketIO, { Socket } from 'socket.io';
 
-import rooms from '../../db';
+import rooms, { updateRooms } from '../../db';
 
 const findRoomToDisconnect = (socketId: string) => {
   const roomToLeave = rooms.find(roomToFind => roomToFind.users.find(user => user.userId === socketId));
@@ -8,6 +8,10 @@ const findRoomToDisconnect = (socketId: string) => {
   if (roomToLeave) {
     const leftUser = roomToLeave.users.find(user => user.userId === socketId);
     roomToLeave.users = roomToLeave.users.filter(user => user.userId !== socketId);
+
+    if (roomToLeave.users.length === 0) {
+      updateRooms(rooms.filter(room => room.id !== roomToLeave.id));
+    }
 
     return { leftUser, roomToLeave };
   } else {
@@ -23,6 +27,8 @@ export default (socket: Socket, io: socketIO.Server) => {
       io.to(roomToLeave.id).emit('userDisconnected', {
         user_left: leftUser
       });
-    } catch (error) {}
+    } catch (error) {
+      return;
+    }
   });
 };

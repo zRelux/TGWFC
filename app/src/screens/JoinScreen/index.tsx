@@ -13,9 +13,10 @@ import BottomSheet from '../../components/BottomSheet';
 
 import { StartHeader } from '../StartScreen/styles';
 
-import { UsernameInputText, UsernameInput } from './styles';
 import useSocket from '../../hooks/useSocket';
 import useData from '../../hooks/useData';
+
+import { RoomIDInputText, RoomIDInput } from './styles';
 
 interface JoinScreenProps {
   navigation: StackNavigationProp<RootStackParamList, 'Join'>;
@@ -54,8 +55,8 @@ const JoinScreen: React.FunctionComponent<JoinScreenProps> = ({ navigation }) =>
     <ScreenContainer>
       <Content>
         <StartHeader>{translate('JoinScreen.pageHeader')}</StartHeader>
-        <UsernameInputText>{translate('JoinScreen.inputHeader')}</UsernameInputText>
-        <UsernameInput value={roomId} onChangeText={onChangeText} />
+        <RoomIDInputText>{translate('JoinScreen.inputHeader')}</RoomIDInputText>
+        <RoomIDInput value={roomId} onChangeText={onChangeText} />
       </Content>
       <BottomSheet
         falsyAction={empty}

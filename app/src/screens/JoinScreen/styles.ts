@@ -9,7 +9,7 @@ export const SettingContainer = styled.View`
   margin-right: ${({ theme }) => theme.spacing.double};
 `;
 
-export const UsernameInputText = styled.Text`
+export const RoomIDInputText = styled.Text`
   font-size: 26px;
 
   margin-top: ${({ theme }) => theme.spacing.multiple(5)};
@@ -17,9 +17,10 @@ export const UsernameInputText = styled.Text`
   color: ${({ theme }) => theme.colors.primary};
 `;
 
-export const UsernameInput = styled.TextInput`
+export const RoomIDInput = styled.TextInput`
   margin-top: ${({ theme }) => theme.spacing.triple};
   padding: ${({ theme }) => theme.spacing.single};
+  padding-left: ${({ theme }) => theme.spacing.double};
 
   height: ${({ theme }) => theme.spacing.multiple(8)};
 

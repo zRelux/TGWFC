@@ -10,7 +10,7 @@ import BottomSheet from '../../components/BottomSheet';
 
 import { MaterialIcons } from '@expo/vector-icons';
 
-import ScreenContainer, { Content } from '../../components/ScreenContainer';
+import ScreenContainer from '../../components/ScreenContainer';
 
 import useData from '../../hooks/useData';
 import useSocket from '../../hooks/useSocket';
@@ -57,8 +57,8 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
   const hostUsername = route.params && route.params.username ? route.params.username : hostUser.username;
   const iAmHost = route.params && route.params.username ? true : hostUser && hostUser.userId === id;
 
-  const notEnoughParticipants = participants.length < 2 || participants.length > 10;
-  const emptyRoom = participants.length === 0;
+  const notEnoughParticipants = participants.length - 1 < 2 || participants.length > 10;
+  const emptyRoom = participants.length - 1 <= 0;
   const lobbyParticipants = participants.filter((part) => part.userId !== id);
 
   useEffect(() => {
@@ -118,48 +118,46 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
 
   return (
     <ScreenContainer>
-      <Content>
-        <HostCard>
-          <HostHeader>
-            <HostHeaderText>{translate('LobbyScreen.hostCardHeader')}</HostHeaderText>
-            <HostNameText>{hostUsername}</HostNameText>
-          </HostHeader>
-          <HostButtons>
-            <Separator />
-            <GameButton background="primaryText">
-              <GameButtonText color="primary">{translate('LobbyScreen.shareButton')}</GameButtonText>
-            </GameButton>
-            <Separator />
-            <GameButton background="primaryText" onPress={leaveMatch}>
-              <GameButtonText color="error">{translate('LobbyScreen.exitButton')}</GameButtonText>
-            </GameButton>
-          </HostButtons>
-        </HostCard>
-        <ParticipantSection>
-          <ParticipantSectionHeader>{translate('LobbyScreen.participantHeader')}</ParticipantSectionHeader>
+      <HostCard>
+        <HostHeader>
+          <HostHeaderText>{translate('LobbyScreen.hostCardHeader')}</HostHeaderText>
+          <HostNameText>{hostUsername}</HostNameText>
+        </HostHeader>
+        <HostButtons>
           <Separator />
-          {emptyRoom ? (
-            <NoParticipants>
-              <NoParticipantsText>{translate('LobbyScreen.noParticipantsLoader')}</NoParticipantsText>
-            </NoParticipants>
-          ) : (
-            <FlatList
-              data={lobbyParticipants}
-              renderItem={({ item }) => (
-                <ParticipantCard key={item.userId}>
-                  <ParticipantCardText>{item.username}</ParticipantCardText>
-                  {iAmHost && (
-                    <RemoveUserButton onPress={kickUser(item)}>
-                      <MaterialIcons name="close" size={32} color="#f2f2f2" />
-                    </RemoveUserButton>
-                  )}
-                </ParticipantCard>
-              )}
-              keyExtractor={(partecipant) => partecipant.userId}
-            />
-          )}
-        </ParticipantSection>
-      </Content>
+          <GameButton background="primaryText">
+            <GameButtonText color="primary">{translate('LobbyScreen.shareButton')}</GameButtonText>
+          </GameButton>
+          <Separator />
+          <GameButton background="primaryText" onPress={leaveMatch}>
+            <GameButtonText color="error">{translate('LobbyScreen.exitButton')}</GameButtonText>
+          </GameButton>
+        </HostButtons>
+      </HostCard>
+      <ParticipantSection>
+        <ParticipantSectionHeader>{translate('LobbyScreen.participantHeader')}</ParticipantSectionHeader>
+        <Separator />
+        {emptyRoom ? (
+          <NoParticipants>
+            <NoParticipantsText>{translate('LobbyScreen.noParticipantsLoader')}</NoParticipantsText>
+          </NoParticipants>
+        ) : (
+          <FlatList
+            data={lobbyParticipants}
+            renderItem={({ item }) => (
+              <ParticipantCard key={item.userId}>
+                <ParticipantCardText>{item.username}</ParticipantCardText>
+                {iAmHost && (
+                  <RemoveUserButton onPress={kickUser(item)}>
+                    <MaterialIcons name="close" size={32} color="#f2f2f2" />
+                  </RemoveUserButton>
+                )}
+              </ParticipantCard>
+            )}
+            keyExtractor={(partecipant) => partecipant.userId}
+          />
+        )}
+      </ParticipantSection>
       <BottomSheet
         goBack={false}
         falsyAction={notEnoughParticipants}

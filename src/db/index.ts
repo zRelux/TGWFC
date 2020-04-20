@@ -139,6 +139,10 @@ export type Room = {
   chosenCards: { userId: string; card: string }[];
 };
 
-const rooms: Room[] = [];
+let rooms: Room[] = [];
+
+export const updateRooms = (newRooms: Room[]) => {
+  rooms = newRooms;
+};
 
 export default rooms;

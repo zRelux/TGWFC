@@ -1,16 +1,9 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.View`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  margin-left: ${({ theme }) => theme.spacing.double};
-  margin-right: ${({ theme }) => theme.spacing.double};
-`;
-
 export const HostCard = styled.View`
   margin-top: ${({ theme }) => theme.spacing.triple};
-  width: 100%;
+  margin-left: ${({ theme }) => theme.spacing.double};
+  margin-right: ${({ theme }) => theme.spacing.double};
   height: ${({ theme }) => theme.spacing.multiple(27.5)};
   background: ${({ theme }) => theme.colors.primary};
   elevation: 3;
@@ -54,6 +47,9 @@ export const ParticipantSection = styled.View`
 
 export const ParticipantSectionHeader = styled.Text`
   font-size: 26px;
+
+  margin-right: ${({ theme }) => theme.spacing.double};
+  margin-left: ${({ theme }) => theme.spacing.double};
   color: ${({ theme }) => theme.colors.primary};
 `;
 
@@ -69,6 +65,8 @@ export const ParticipantCard = styled.View`
   box-shadow: 3px 3px 4px #00000065;
   border-radius: ${({ theme }) => theme.spacing.double};
 
+  margin-right: ${({ theme }) => theme.spacing.double};
+  margin-left: ${({ theme }) => theme.spacing.double};
   margin-bottom: ${({ theme }) => theme.spacing.triple};
 
   padding-left: ${({ theme }) => theme.spacing.double};
