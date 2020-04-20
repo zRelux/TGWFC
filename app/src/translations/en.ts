@@ -23,6 +23,12 @@ export default {
     startButton: 'Start the game!',
     waitHostButton: 'Waiting for host…'
   },
+  JoinScreen: {
+    pageHeader: 'Join a game',
+    inputHeader: 'Insert room id',
+    joinButton: 'Join room',
+    noJoinButton: 'Please insert room Id'
+  },
   SettingsScreen: {
     pageHeader: 'Settings',
     inputHeader: 'Your name in game',

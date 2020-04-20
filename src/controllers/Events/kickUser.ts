@@ -5,15 +5,15 @@ import { RoomUser, Room } from '../../db';
 
 type JoinPayload = {
   user_id: string;
-  room_Id: string;
+  room_id: string;
 };
 
-const kickUser = (payload: JoinPayload, socketId: string): [Room, RoomUser] => {
-  const room = findRoom(payload.room_Id);
+const kickUser = (payload: JoinPayload): [Room, RoomUser] => {
+  const room = findRoom(payload.room_id);
 
   if (room) {
-    if (room.users.find(user => user.userId === socketId)) {
-      const index = room.users.findIndex(user => user.userId === socketId);
+    if (room.users.find(user => user.userId === payload.user_id)) {
+      const index = room.users.findIndex(user => user.userId === payload.user_id);
       const user = room.users[index];
 
       room.users = [...room.users.slice(0, index), ...room.users.slice(index + 1)];
@@ -30,7 +30,7 @@ const kickUser = (payload: JoinPayload, socketId: string): [Room, RoomUser] => {
 export default (socket: Socket, io: socketIO.Server) => {
   socket.on('kickUser', (payload: JoinPayload) => {
     try {
-      const [room, user] = kickUser(payload, socket.id);
+      const [room, user] = kickUser(payload);
 
       if (io.sockets.connected[socket.id]) {
         io.sockets.connected[socket.id].disconnect();

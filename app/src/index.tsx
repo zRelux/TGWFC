@@ -7,20 +7,24 @@ import { createStackNavigator } from '@react-navigation/stack';
 import theme from './theme';
 
 import { SocketProvider } from './contexts/Socket';
-import { ParticipantProvider } from './contexts/Participant';
+import { ParticipantProvider, User } from './contexts/Participant';
 import { DataProvider } from './contexts/Data';
+
+import { getUsername } from './utils/storage';
 
 import HomeScreen from './screens/HomeScreen';
 import StartScreen from './screens/StartScreen';
 import LobbyScreen from './screens/LobbyScreen';
 import SettingsScreen from './screens/SettingsScreen';
-
-import { getUsername } from './utils/storage';
+import GameScreen from './screens/GameScreen';
+import JoinScreen from './screens/JoinScreen';
 
 export type RootStackParamList = {
   Home: undefined;
   Start: undefined;
   Lobby: { username?: string };
+  Join: undefined;
+  Game: { cardToShow: string; cards: string[]; iAmChooser: boolean; round: number; chooser: User };
   Settings: undefined;
 };
 
@@ -63,7 +67,9 @@ const App: React.FunctionComponent = () => {
               >
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Start" component={StartScreen} />
+                <Stack.Screen name="Join" component={JoinScreen} />
                 <Stack.Screen name="Lobby" component={LobbyScreen} />
+                <Stack.Screen name="Game" component={GameScreen} />
                 <Stack.Screen name="Settings" component={SettingsScreen} />
               </Stack.Navigator>
             </NavigationContainer>

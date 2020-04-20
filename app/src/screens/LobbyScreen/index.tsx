@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { FlatList } from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
@@ -40,26 +40,67 @@ interface LobbyScreenProps {
   route: RouteProp<RootStackParamList, 'Lobby'>;
 }
 
+export type StartGameReplyPayload = {
+  card_to_show: string;
+  cards: string[];
+  i_am_chooser: boolean;
+  round: number;
+  chooser: User;
+  error?: string;
+};
+
 const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, route }) => {
   const { roomId } = useData();
   const { participants, hostUser } = useParticipant();
-  const { send, id } = useSocket();
+  const { send, id, listen, socketAvailable } = useSocket();
 
   const hostUsername = route.params && route.params.username ? route.params.username : hostUser.username;
-  const iAmHost = hostUser && hostUser.userId === id;
+  const iAmHost = route.params && route.params.username ? true : hostUser && hostUser.userId === id;
 
-  const empty = participants.length === 0;
+  const notEnoughParticipants = participants.length < 2 || participants.length > 10;
+  const emptyRoom = participants.length === 0;
+
+  useEffect(() => {
+    if (socketAvailable) {
+      listen<StartGameReplyPayload>(
+        'startGameReply',
+        ({ error, card_to_show, cards, i_am_chooser, round, chooser }) => {
+          console.log('Res from startFame', { error, card_to_show, cards, i_am_chooser, round, chooser });
+
+          if (!error) {
+            navigation.navigate('Game', {
+              cardToShow: card_to_show,
+              cards,
+              iAmChooser: i_am_chooser,
+              round,
+              chooser
+            });
+          } else {
+            alert(error);
+          }
+        }
+      );
+    }
+  }, [socketAvailable]);
+
+  const goToMatch = () => {
+    if (iAmHost) {
+      send('startGame', {
+        room_id: roomId
+      });
+    }
+  };
 
   const kickUser = (userToKick: User) => () => {
     send('kickUser', {
       user_id: userToKick.userId,
-      roomId
+      room_id: roomId
     });
   };
 
   const leaveMatch = () => {
     send('leaveRoom', {
-      roomId
+      room_id: roomId
     });
 
     navigation.goBack();
@@ -87,7 +128,7 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
         <ParticipantSection>
           <ParticipantSectionHeader>{translate('LobbyScreen.participantHeader')}</ParticipantSectionHeader>
           <Separator />
-          {empty ? (
+          {emptyRoom ? (
             <NoParticipants>
               <NoParticipantsText>{translate('LobbyScreen.noParticipantsLoader')}</NoParticipantsText>
             </NoParticipants>
@@ -111,8 +152,8 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
       </Content>
       <BottomSheet
         goBack={false}
-        falsyAction={empty}
-        callOnTruth={() => {}}
+        falsyAction={notEnoughParticipants}
+        callOnTruth={goToMatch}
         copy={{
           actionFalsy: translate('LobbyScreen.waitingButton'),
           actionTruthy: iAmHost ? translate('LobbyScreen.startButton') : translate('LobbyScreen.waitHostButton')

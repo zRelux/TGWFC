@@ -14,9 +14,10 @@ type DisconnectedPayload = {
   new_host?: User;
 };
 
-type JoinRoomPayload = {
+export type JoinRoomPayload = {
   room_host: User;
-  new_user: User;
+  lobby_users: User[];
+  error?: string;
 };
 
 interface ParticipantContext {
@@ -46,41 +47,51 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
     host: false
   });
   const [participants, setParticipants] = useState<User[]>([]);
-  const { listen, socketAvailable } = useSocket();
+  const { id, listen, socketAvailable } = useSocket();
 
   useEffect(() => {
     if (socketAvailable) {
-      listen<JoinRoomPayload>('joinRoomReply', ({ room_host, new_user }) => {
-        setHostUser(room_host);
-        setParticipants((prevPartecipants) => [...prevPartecipants, new_user]);
+      listen<JoinRoomPayload>('joinRoomReply', ({ room_host, lobby_users }) => {
+        if (room_host) {
+          setHostUser(room_host);
+        }
+
+        if (lobby_users) {
+          const newUsers = lobby_users.filter((lobbyUser) => lobbyUser.userId !== id);
+          setParticipants(newUsers);
+        }
       });
 
       listen<DisconnectedPayload>('kickUserReply', ({ user_left }) => {
-        const tmpArr = [...participants];
+        setParticipants((oldParticipants) => {
+          const tmpArr = [...oldParticipants];
 
-        const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
-
-        setParticipants([...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)]);
+          const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
+          return [...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)];
+        });
       });
 
       listen<DisconnectedPayload>('leaveRoomReply', ({ new_host, user_left }) => {
-        const tmpArr = [...participants];
-
-        const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
-
         if (new_host) {
           setHostUser(new_host);
         }
 
-        setParticipants([...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)]);
+        setParticipants((oldParticipants) => {
+          const tmpArr = [...oldParticipants];
+
+          const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
+
+          return [...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)];
+        });
       });
 
       listen<DisconnectedPayload>('userDisconnected', ({ user_left }) => {
-        const tmpArr = [...participants];
+        setParticipants((oldParticipants) => {
+          const tmpArr = [...oldParticipants];
 
-        const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
-
-        setParticipants([...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)]);
+          const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
+          return [...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)];
+        });
       });
     }
   }, [socketAvailable]);

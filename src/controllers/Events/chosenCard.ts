@@ -36,7 +36,7 @@ export default (socket: Socket, io: socketIO.Server) => {
       const room = chosenCard(payload, socket.id);
 
       io.to(room.id).emit('chosenCardReply', {
-        choosen_cards: room.chosenCards
+        chosen_cards: room.chosenCards.map(({ card }) => card)
       });
     } catch (error) {
       socket.emit('chosenCardReply', {

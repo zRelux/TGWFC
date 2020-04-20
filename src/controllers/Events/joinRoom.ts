@@ -5,11 +5,11 @@ import { Room, RoomUser } from '../../db';
 
 type JoinPayload = {
   username: string;
-  roomId: string;
+  room_id: string;
 };
 
 const joinRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser] => {
-  const room = findRoom(payload.roomId);
+  const room = findRoom(payload.room_id);
 
   if (room) {
     room.users.push({
@@ -38,12 +38,7 @@ export default (socket: Socket, io: socketIO.Server) => {
 
       io.to(room.id).emit('joinRoomReply', {
         room_host: user,
-        new_user: {
-          id: socket.id,
-          username: payload.username,
-          points: 0,
-          cards: []
-        }
+        lobby_users: room.users
       });
     } catch (error) {
       socket.emit('joinRoomReply', {

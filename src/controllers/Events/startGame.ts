@@ -50,11 +50,12 @@ export default (socket: Socket, io: socketIO.Server) => {
           card_to_show: room.cardsToFill.cards[room.cardsToFill.index],
           cards: user.cards,
           i_am_chooser: iAmChooser,
+          chooser: room.chooser,
           round: room.roundsPlayed
         });
-
-        room.cardsToFill.index = addWithBounds(room.cardsToFill.index, room.cardsToGive.cards.length);
       });
+
+      room.cardsToFill.index = addWithBounds(room.cardsToFill.index, room.cardsToGive.cards.length);
     } catch (error) {
       socket.emit('startGameReply', {
         error: error.message

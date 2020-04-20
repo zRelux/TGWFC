@@ -48,6 +48,10 @@ export const SocketProvider: React.FunctionComponent<SocketProviderProps> = ({ c
     });
 
     setSocket(socket);
+
+    return () => {
+      socket.disconnect();
+    };
   }, []);
 
   const send = <T extends object>(key: string, payload: T) => {

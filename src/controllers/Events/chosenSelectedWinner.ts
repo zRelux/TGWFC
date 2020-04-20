@@ -1,5 +1,7 @@
 import socketIO, { Socket } from 'socket.io';
 
+import { RoomUser, Room } from '../../db';
+
 import findRoom from '../../utils/findRoom';
 import addWithBounds from '../../utils/addWithBounds';
 import assingCards from '../../utils/assingCards';
@@ -9,7 +11,7 @@ type WinnerPayload = {
   winner_card: string;
 };
 
-const winnerRound = (payload: WinnerPayload, socketId: string) => {
+const winnerRound = (payload: WinnerPayload, socketId: string): [Room, RoomUser | undefined] => {
   const room = findRoom(payload.room_id);
 
   if (room) {
@@ -24,6 +26,10 @@ const winnerRound = (payload: WinnerPayload, socketId: string) => {
     const winner = room.chosenCards.find(({ card }) => payload.winner_card === card);
 
     if (winner) {
+      const winnerUser = room.users.filter(user => {
+        return user.userId === winner.userId;
+      })[0];
+
       room.users.forEach(user => {
         if (user.userId === winner.userId) {
           user.points++;
@@ -33,18 +39,20 @@ const winnerRound = (payload: WinnerPayload, socketId: string) => {
       room.users.forEach(user => {
         user.cards = assingCards(room, 1);
       });
-    }
 
-    if (room.chooser) {
-      if (room.chooser.user.userId !== socketId) {
-        throw new Error('You are not the chooser');
+      if (room.chooser) {
+        if (room.chooser.user.userId !== socketId) {
+          throw new Error('You are not the chooser');
+        }
+
+        const newIndex = addWithBounds(room.chooser.index, room.users.length);
+        room.chooser = { index: newIndex, user: room.users[newIndex] };
       }
 
-      const newIndex = addWithBounds(room.chooser.index, room.users.length);
-      room.chooser = { index: newIndex, user: room.users[newIndex] };
+      return [room, winnerUser];
     }
 
-    return room;
+    return [room, undefined];
   } else {
     throw new Error('Room not found');
   }
@@ -53,7 +61,7 @@ const winnerRound = (payload: WinnerPayload, socketId: string) => {
 export default (socket: Socket, io: socketIO.Server) => {
   socket.on('chosenSelectedWinner', (payload: WinnerPayload) => {
     try {
-      const room = winnerRound(payload, socket.id);
+      const [room, winner] = winnerRound(payload, socket.id);
 
       room.users.forEach(user => {
         let iAmChooser = false;
@@ -66,7 +74,9 @@ export default (socket: Socket, io: socketIO.Server) => {
           card_to_show: room.cardsToFill.cards[room.cardsToFill.index],
           cards: user.cards,
           i_am_chooser: iAmChooser,
-          round: room.roundsPlayed
+          chooser: room.chooser,
+          round: room.roundsPlayed,
+          round_winner: winner
         });
 
         room.cardsToFill.index = addWithBounds(room.cardsToFill.index, room.cardsToGive.cards.length);

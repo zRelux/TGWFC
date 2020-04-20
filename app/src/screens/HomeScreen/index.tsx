@@ -27,7 +27,7 @@ const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ navigation }) =>
         <Button color="primary" onPress={goToScreen('Start')}>
           <ButtonText>{translate('HomeScreen.startButton')}</ButtonText>
         </Button>
-        <Button color="secondary" onPress={() => alert('Bella')}>
+        <Button color="secondary" onPress={goToScreen('Join')}>
           <ButtonText>{translate('HomeScreen.joinButton')}</ButtonText>
         </Button>
         <Button color="tertiary" onPress={goToScreen('Settings')}>

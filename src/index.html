@@ -54,11 +54,13 @@
       Window.connectionSocket = io();
 
       // Join chatroom
-      // Window.connectionSocket.emit('createRoom', { username: 'Test username', numberOfRounds: 10, packs: ['1'] });
-      // Window.connectionSocket.emit('joinRoom', { username: 'Test username 2', roomId: '1' });
-      // Window.connectionSocket.emit('startGame', { roomId: '1' });
-      // Window.connectionSocket.emit('chosenCard', { chosenCard: '', roomId: '1' });
-      // Window.connectionSocket.emit('choseSelectedWinner', { winnerCard: '', roomId: '1' });
+      // Window.connectionSocket.emit('createRoom', { username: 'Test username', number_of_ounds: 10, packs: ['1'] });
+      // Window.connectionSocket.emit('joinRoom', { username: 'Test username 2', room_id: '1' });
+      // Window.connectionSocket.emit('startGame', { room_id: '1' });
+      // Window.connectionSocket.emit('chosenCard', { chosen_card: '', room_id: '1' });
+      // Window.connectionSocket.emit('choseSelectedWinner', { winner_card: '', room_id: '1' });
+      // Window.connectionSocket.emit('choseSelectedWinner', { winner_card: '', room_id: '1' });
+      // Window.connectionSocket.emit('choseSelectedWinner', { winner_card: '', room_id: '1' });
 
       // Get room and users
       Window.connectionSocket.on('createRoomReply', payload => {

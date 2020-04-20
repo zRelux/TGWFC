@@ -7,7 +7,9 @@ export const BottomSheetContainer = styled.View`
   margin-top: auto;
 
   background: ${({ theme }) => theme.colors.primary};
-  border-radius: ${({ theme }) => theme.spacing.double};
+
+  border-top-left-radius: ${({ theme }) => theme.spacing.double};
+  border-top-right-radius: ${({ theme }) => theme.spacing.double};
 
   padding: ${({ theme }) => theme.spacing.multiple(4)};
 
