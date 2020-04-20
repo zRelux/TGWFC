@@ -19,7 +19,7 @@ const createRoom = (payload: CreatePayload, socketId: string) => {
   const cardsToGive = packsOfTheRoom.map(pack => pack.toUse);
 
   const roomToAdd: Room = {
-    id: '1', //shortId(),
+    id: shortId(),
     cardsToFill: { index: 0, cards: shuffle(cardsToFill.flat(1)) },
     cardsToGive: { index: 0, cards: shuffle(cardsToGive.flat(1)) },
     chosenCards: [],
