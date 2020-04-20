@@ -23,8 +23,6 @@ export default (socket: Socket, io: socketIO.Server) => {
       io.to(roomToLeave.id).emit('userDisconnected', {
         user_left: leftUser
       });
-    } catch (error) {
-      console.error(error);
-    }
+    } catch (error) {}
   });
 };

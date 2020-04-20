@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
+import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../..';
 
@@ -12,9 +13,24 @@ import { Separator } from '../LobbyScreen/styles';
 
 interface HomeScreenProps {
   navigation: StackNavigationProp<RootStackParamList, 'Home'>;
+  route: RouteProp<RootStackParamList, 'Home'>;
 }
 
-const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ navigation }) => {
+const HomeScreen: React.FunctionComponent<HomeScreenProps> = ({ navigation, route }) => {
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (route.params && route.params.msg) {
+      setError(route.params.msg);
+      route.params.msg = undefined;
+    }
+
+    if (error !== '') {
+      alert(error);
+      setError('');
+    }
+  }, [route.params, error]);
+
   const goToScreen = (screen: any) => () => {
     navigation.navigate(screen);
   };

@@ -29,6 +29,15 @@ export default {
     joinButton: 'Join room',
     noJoinButton: 'Please insert room Id'
   },
+  GameScreen: {
+    waiting: 'Waiting for players to choose…',
+    userChoseCard: 'Choose your completion:',
+    userWaitingCzar: 'Waiting for Czar to choose...',
+    czarChoosing: 'Choose the funnier card',
+    czarWaiting: 'You are the Card Czar.',
+    cardButtonChoose: 'Select',
+    cardButtonChosen: 'Selected'
+  },
   SettingsScreen: {
     pageHeader: 'Settings',
     inputHeader: 'Your name in game',

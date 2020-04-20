@@ -3,6 +3,7 @@ import styled from 'styled-components/native';
 export const CardToFill = styled.View`
   height: ${({ theme }) => theme.spacing.multiple(27.5)};
   background: ${({ theme }) => theme.colors.primary};
+  elevation: 3;
   box-shadow: 3px 3px 4px #00000065;
   border-radius: ${({ theme }) => theme.spacing.double};
 `;
@@ -34,9 +35,11 @@ export const ChooseCard = styled.View<ChooseCardProps>`
 
   margin-top: ${({ theme }) => theme.spacing.double};
   margin-right: ${({ theme }) => theme.spacing.double};
+  margin-left: ${({ theme }) => theme.spacing.double};
 
   height: ${({ theme }) => theme.spacing.multiple(27.5)};
   background: ${({ theme }) => theme.colors.primaryText};
+  elevation: 3;
   box-shadow: 3px 3px 4px #00000065;
   border-radius: ${({ theme }) => theme.spacing.double};
 `;

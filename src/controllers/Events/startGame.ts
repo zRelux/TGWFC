@@ -50,7 +50,7 @@ export default (socket: Socket, io: socketIO.Server) => {
           card_to_show: room.cardsToFill.cards[room.cardsToFill.index],
           cards: user.cards,
           i_am_chooser: iAmChooser,
-          chooser: room.chooser,
+          chooser: room.chooser && room.chooser.user,
           round: room.roundsPlayed
         });
       });

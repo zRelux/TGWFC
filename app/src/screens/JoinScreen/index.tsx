@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../..';
@@ -22,8 +22,7 @@ interface JoinScreenProps {
 }
 
 const JoinScreen: React.FunctionComponent<JoinScreenProps> = ({ navigation }) => {
-  const [roomId, setRoomId] = useState('1');
-  const { username } = useData();
+  const { username, roomId, setRoomId } = useData();
   const { send, listen, socketAvailable } = useSocket();
 
   const empty = roomId === '';

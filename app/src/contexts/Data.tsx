@@ -13,6 +13,7 @@ interface DataContext {
   username: string;
   packs: Pack[];
   setUsername: (newUsername: string) => void;
+  setRoomId: (newRoomId: string) => void;
 }
 
 interface CreateRoomReplyPayload {
@@ -26,7 +27,8 @@ const DataContext = React.createContext<DataContext>({
   roomId: '',
   username: '',
   packs: [],
-  setUsername: () => {}
+  setUsername: () => {},
+  setRoomId: () => {}
 });
 
 interface DataProviderProps {}
@@ -70,7 +72,9 @@ export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ child
     getSavedUsername();
   }, []);
 
-  return <DataContext.Provider value={{ packs, roomId, username, setUsername }}>{children}</DataContext.Provider>;
+  return (
+    <DataContext.Provider value={{ packs, roomId, username, setUsername, setRoomId }}>{children}</DataContext.Provider>
+  );
 };
 
 export default DataContext;

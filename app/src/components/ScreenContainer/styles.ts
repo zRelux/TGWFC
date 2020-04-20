@@ -7,6 +7,7 @@ export const Container = styled.View`
 
 export const Content = styled.View`
   flex: 1;
+  padding-top: ${({ theme }) => theme.spacing.double};
   padding-left: ${({ theme }) => theme.spacing.double};
   padding-right: ${({ theme }) => theme.spacing.double};
 `;

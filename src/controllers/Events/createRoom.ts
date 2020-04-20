@@ -1,5 +1,5 @@
 import { Socket } from 'socket.io';
-//import shortId from 'shortid';
+import shortId from 'shortid';
 
 import rooms, { packs, Room } from '../../db';
 import shuffle from '../../utils/shuffle';
@@ -41,8 +41,7 @@ export default (socket: Socket) => {
 
     socket.emit('createRoomReply', {
       room: {
-        id,
-        url: `http:localhost:3000/${id}`
+        id
       }
     });
   });

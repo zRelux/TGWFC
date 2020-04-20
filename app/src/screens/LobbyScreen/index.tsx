@@ -51,7 +51,7 @@ export type StartGameReplyPayload = {
 
 const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, route }) => {
   const { roomId } = useData();
-  const { participants, hostUser } = useParticipant();
+  const { kickedUserId, participants, hostUser, setKickedUserId } = useParticipant();
   const { send, id, listen, socketAvailable } = useSocket();
 
   const hostUsername = route.params && route.params.username ? route.params.username : hostUser.username;
@@ -59,12 +59,15 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
 
   const notEnoughParticipants = participants.length < 2 || participants.length > 10;
   const emptyRoom = participants.length === 0;
+  const lobbyParticipants = participants.filter((part) => part.userId !== id);
 
   useEffect(() => {
     if (socketAvailable) {
       listen<StartGameReplyPayload>(
         'startGameReply',
         ({ error, card_to_show, cards, i_am_chooser, round, chooser }) => {
+          console.log({ error, card_to_show, cards, i_am_chooser, round, chooser });
+
           if (!error) {
             navigation.navigate('Game', {
               cardToShow: card_to_show,
@@ -80,6 +83,15 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
       );
     }
   }, [socketAvailable]);
+
+  useEffect(() => {
+    if (kickedUserId === id) {
+      setKickedUserId('');
+      navigation.navigate('Home', {
+        msg: 'You got kicked!!'
+      });
+    }
+  }, [kickedUserId]);
 
   const goToMatch = () => {
     if (iAmHost) {
@@ -132,7 +144,7 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
             </NoParticipants>
           ) : (
             <FlatList
-              data={participants}
+              data={lobbyParticipants}
               renderItem={({ item }) => (
                 <ParticipantCard key={item.userId}>
                   <ParticipantCardText>{item.username}</ParticipantCardText>

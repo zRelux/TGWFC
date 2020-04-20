@@ -13,6 +13,7 @@ export const HostCard = styled.View`
   width: 100%;
   height: ${({ theme }) => theme.spacing.multiple(27.5)};
   background: ${({ theme }) => theme.colors.primary};
+  elevation: 3;
   box-shadow: 3px 3px 4px #00000065;
   border-radius: ${({ theme }) => theme.spacing.double};
 
@@ -64,6 +65,7 @@ export const ParticipantCard = styled.View`
 
   height: ${({ theme }) => theme.spacing.multiple(8)};
   background: #707070;
+  elevation: 3;
   box-shadow: 3px 3px 4px #00000065;
   border-radius: ${({ theme }) => theme.spacing.double};
 

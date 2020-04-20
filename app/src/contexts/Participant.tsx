@@ -23,10 +23,14 @@ export type JoinRoomPayload = {
 interface ParticipantContext {
   hostUser: User;
   participants: User[];
+  kickedUserId: string;
+  setKickedUserId: (kickedUserId: string) => void;
 }
 
 const ParticipantContext = React.createContext<ParticipantContext>({
   participants: [],
+  kickedUserId: '',
+  setKickedUserId: () => {},
   hostUser: {
     userId: '',
     username: '',
@@ -47,7 +51,8 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
     host: false
   });
   const [participants, setParticipants] = useState<User[]>([]);
-  const { id, listen, socketAvailable } = useSocket();
+  const [kickedUserId, setKickedUserId] = useState<string>('');
+  const { listen, socketAvailable } = useSocket();
 
   useEffect(() => {
     if (socketAvailable) {
@@ -57,14 +62,12 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
         }
 
         if (lobby_users) {
-          const newUsers = lobby_users.filter((lobbyUser) => lobbyUser.userId !== id);
-          setParticipants(newUsers);
+          setParticipants(lobby_users);
         }
       });
 
       listen<DisconnectedPayload>('kickUserReply', ({ user_left }) => {
-        console.log('Kick user reply');
-
+        setKickedUserId(user_left.userId);
         setParticipants((oldParticipants) => {
           const tmpArr = [...oldParticipants];
 
@@ -74,8 +77,6 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
       });
 
       listen<DisconnectedPayload>('leaveRoomReply', ({ new_host, user_left }) => {
-        console.log('leaveRoomReply', user_left);
-
         if (new_host) {
           setHostUser(new_host);
         }
@@ -100,7 +101,11 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
     }
   }, [socketAvailable]);
 
-  return <ParticipantContext.Provider value={{ hostUser, participants }}>{children}</ParticipantContext.Provider>;
+  return (
+    <ParticipantContext.Provider value={{ kickedUserId, setKickedUserId, hostUser, participants }}>
+      {children}
+    </ParticipantContext.Provider>
+  );
 };
 
 export default ParticipantContext;

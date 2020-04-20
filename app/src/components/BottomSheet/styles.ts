@@ -15,6 +15,7 @@ export const BottomSheetContainer = styled.View`
 
   padding-top: ${({ theme }) => theme.spacing.triple};
 
+  elevation: 3;
   box-shadow: 0px -3px 4px #00000066;
 `;
 

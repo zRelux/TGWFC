@@ -20,7 +20,7 @@ import GameScreen from './screens/GameScreen';
 import JoinScreen from './screens/JoinScreen';
 
 export type RootStackParamList = {
-  Home: undefined;
+  Home: { msg?: string };
   Start: undefined;
   Lobby: { username?: string };
   Join: undefined;
