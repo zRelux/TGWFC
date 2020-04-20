@@ -8,7 +8,8 @@ import rooms, { Pack } from '../../db';
 const router = express.Router();
 
 router.get('/', (_, res) => {
-  const packsFile = JSON.stringify(fs.readFileSync(path.join(__dirname, '..', '..', 'db/packs.json')));
+  const packsFile = fs.readFileSync(path.join(__dirname, '..', '..', 'db/packs.json'));
+  // @ts-ignore
   const packs: Pack[] = JSON.parse(packsFile);
 
   const packsToSend = packs.map(pack => {
@@ -18,7 +19,7 @@ router.get('/', (_, res) => {
     };
   });
 
-  res.send({ packs: packsToSend });
+  res.json({ packs: packsToSend });
 });
 
 router.get('/rooms', (_, res) => {

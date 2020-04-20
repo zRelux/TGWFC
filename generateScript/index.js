@@ -18,7 +18,7 @@ const fetchAndSave = async () => {
     const sets = packs.packs;
 
     for (const set of sets) {
-      await delay(5000);
+      await delay(2500);
       try {
         console.log(apiUrl + packs.id + '/' + set);
 
