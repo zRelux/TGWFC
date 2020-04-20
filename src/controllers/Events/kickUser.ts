@@ -32,8 +32,8 @@ export default (socket: Socket, io: socketIO.Server) => {
     try {
       const [room, user] = kickUser(payload);
 
-      if (io.sockets.connected[socket.id]) {
-        io.sockets.connected[socket.id].disconnect();
+      if (io.sockets.connected[user.userId]) {
+        io.sockets.connected[user.userId].disconnect();
       }
 
       io.to(room.id).emit('kickUserReply', {

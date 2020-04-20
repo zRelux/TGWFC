@@ -65,8 +65,6 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
       listen<StartGameReplyPayload>(
         'startGameReply',
         ({ error, card_to_show, cards, i_am_chooser, round, chooser }) => {
-          console.log('Res from startFame', { error, card_to_show, cards, i_am_chooser, round, chooser });
-
           if (!error) {
             navigation.navigate('Game', {
               cardToShow: card_to_show,

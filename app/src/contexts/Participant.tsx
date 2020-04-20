@@ -63,6 +63,8 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
       });
 
       listen<DisconnectedPayload>('kickUserReply', ({ user_left }) => {
+        console.log('Kick user reply');
+
         setParticipants((oldParticipants) => {
           const tmpArr = [...oldParticipants];
 
@@ -72,6 +74,8 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
       });
 
       listen<DisconnectedPayload>('leaveRoomReply', ({ new_host, user_left }) => {
+        console.log('leaveRoomReply', user_left);
+
         if (new_host) {
           setHostUser(new_host);
         }
