@@ -36,7 +36,6 @@ interface DataProviderProps {}
 export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ children }) => {
   const [roomId, setRoomId] = useState('');
   const [username, setUsername] = useState('');
-  const [joinUrl, setJoinUrl] = useState('');
   const [packs, setPacks] = useState<Pack[]>([]);
 
   const { listen, socketAvailable } = useSocket();

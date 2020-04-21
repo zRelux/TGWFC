@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useRef } from 'react';
 import { registerRootComponent, AppLoading, Linking } from 'expo';
 import { ThemeProvider } from 'styled-components/native';
 
@@ -73,7 +73,6 @@ const App: React.FunctionComponent = () => {
     setUsernameInStore(savedUsername);
 
     const state = await getInitialState();
-    console.log(state);
 
     if (state !== undefined && savedUsername !== '') {
       setInitialState(state);

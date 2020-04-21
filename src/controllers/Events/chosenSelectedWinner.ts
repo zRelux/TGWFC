@@ -36,7 +36,9 @@ const winnerRound = (payload: WinnerPayload, socketId: string): [Room, RoomUser 
       });
 
       room.users.forEach(user => {
-        user.cards.concat(assingCards(room, 1, user.id));
+        if (user.id !== socketId) {
+          user.cards = user.cards.concat(assingCards(room, 1, user.id));
+        }
       });
 
       if (room.chooser) {
