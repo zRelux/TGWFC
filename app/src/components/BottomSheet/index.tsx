@@ -30,7 +30,7 @@ const BottomSheet: React.FunctionComponent<BottomSheetProps> = ({
 
   const goBackMethod = () => {
     if (navigation) {
-      navigation.goBack();
+      navigation.navigate('Home');
     }
   };
 

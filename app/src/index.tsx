@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { registerRootComponent, AppLoading } from 'expo';
+import React, { useState, useEffect, useRef } from 'react';
+import { registerRootComponent, AppLoading, Linking } from 'expo';
 import { ThemeProvider } from 'styled-components/native';
 
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useLinking, NavigationContainerRef } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import theme from './theme';
 
@@ -25,7 +25,7 @@ import WinnerScreen from './screens/WinnerScreen';
 export type RootStackParamList = {
   Home: { msg?: string };
   Start: undefined;
-  Lobby: { username?: string };
+  Lobby: { username?: string; roomId?: string };
   Join: undefined;
   Game: { cardToShow: string; cards: Card[]; iAmChooser: boolean; round: number; chooser: User };
   Winner: undefined;
@@ -34,35 +34,66 @@ export type RootStackParamList = {
 
 const Stack = createStackNavigator<RootStackParamList>();
 
+const prefix = Linking.makeUrl('/');
+const config = {
+  Home: 'home',
+  Start: 'start',
+  Join: 'join',
+  Lobby: {
+    path: 'lobby',
+    parse: {
+      roomId: String
+    }
+  },
+  Game: 'game',
+  Winner: 'winner',
+  Settings: 'settings'
+};
+
 const App: React.FunctionComponent = () => {
   const [ready, setReady] = useState(false);
+  const [initialState, setInitialState] = useState<any>();
   const [usernameInStore, setUsernameInStore] = useState('');
 
-  const appLoad = async () => {};
+  const ref = useRef<NavigationContainerRef>(null);
 
-  if (!ready) {
-    return (
-      <AppLoading
-        startAsync={appLoad}
-        onFinish={async () => {
-          let savedUsername = '';
-          try {
-            savedUsername = await getUsername();
-          } catch (error) {}
+  const { getInitialState } = useLinking(ref, {
+    prefixes: [prefix],
+    config
+  });
 
-          setUsernameInStore(savedUsername);
-          setReady(true);
-        }}
-      />
-    );
-  }
+  const appLoad = async () => {
+    let savedUsername = '';
+    try {
+      savedUsername = await getUsername();
+    } catch (error) {
+      console.log(error);
+    }
 
-  return (
+    setUsernameInStore(savedUsername);
+
+    const state = await getInitialState();
+    console.log(state);
+
+    if (state !== undefined && savedUsername !== '') {
+      setInitialState(state);
+    } else {
+    }
+  };
+
+  return !ready ? (
+    <AppLoading
+      startAsync={appLoad}
+      onFinish={async () => {
+        setReady(true);
+      }}
+    />
+  ) : (
     <ThemeProvider theme={theme}>
       <SocketProvider>
         <ParticipantProvider>
           <DataProvider>
-            <NavigationContainer>
+            <NavigationContainer initialState={initialState} ref={ref}>
               <Stack.Navigator
                 screenOptions={{
                   headerShown: false

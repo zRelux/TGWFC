@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
-import { FlatList } from 'react-native';
+import { FlatList, Share } from 'react-native';
+
+import { Linking } from 'expo';
 
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -18,7 +20,7 @@ import useParticipant from '../../hooks/useParticipant';
 import { translate } from '../../translations';
 
 import { User } from '../../types/User';
-import { GameReplyPayload } from '../../types/Payloads';
+import { GameReplyPayload, RoomUpdatePayload } from '../../types/Payloads';
 
 import {
   HostCard,
@@ -42,7 +44,7 @@ interface LobbyScreenProps {
 }
 
 const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, route }) => {
-  const { roomId } = useData();
+  const { username, roomId, setRoomId } = useData();
   const { kickedUserId, participants, hostUser, setKickedUserId } = useParticipant();
   const { send, id, listen, socketAvailable } = useSocket();
 
@@ -55,6 +57,14 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
 
   useEffect(() => {
     if (socketAvailable) {
+      listen<RoomUpdatePayload>('joinRoomReply', (payload) => {
+        console.log('joinRoomReply Payload', payload);
+
+        if (payload.error) {
+          navigation.navigate('Home', { msg: payload.error });
+        }
+      });
+
       listen<GameReplyPayload>('startGameReply', ({ error, card_to_show, cards, i_am_chooser, round, chooser }) => {
         if (!error) {
           navigation.navigate('Game', {
@@ -72,6 +82,19 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
   }, [socketAvailable]);
 
   useEffect(() => {
+    if (route.params && route.params.roomId) {
+      send('joinRoom', {
+        username,
+        room_id: route.params.roomId
+      });
+
+      setRoomId(route.params.roomId);
+
+      route.params.roomId = undefined;
+    }
+  }, [route.params]);
+
+  useEffect(() => {
     if (kickedUserId === id) {
       setKickedUserId('');
       navigation.navigate('Home', {
@@ -79,6 +102,34 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
       });
     }
   }, [kickedUserId]);
+
+  const onShare = async () => {
+    try {
+      const redirectUrl = Linking.makeUrl('lobby', { roomId });
+      console.log(redirectUrl);
+
+      const result = await Share.share({
+        message:
+          'Join a match and play against me at ' +
+          redirectUrl +
+          ' or enter this room id ' +
+          roomId +
+          ' in the participate section'
+      });
+
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
 
   const goToMatch = () => {
     if (iAmHost) {
@@ -112,7 +163,7 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
         </HostHeader>
         <HostButtons>
           <Separator />
-          <GameButton background="primaryText">
+          <GameButton background="primaryText" onPress={onShare}>
             <GameButtonText color="primary">{translate('LobbyScreen.shareButton')}</GameButtonText>
           </GameButton>
           <Separator />

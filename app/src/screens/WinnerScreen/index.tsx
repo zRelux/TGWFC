@@ -5,12 +5,14 @@ import { RootStackParamList } from '../..';
 
 import { translate } from '../../translations';
 
-import ScreenContainer from '../../components/ScreenContainer';
+import { User } from '../../types/User';
 
-import { User } from '../../contexts/Participant';
+import ScreenContainer from '../../components/ScreenContainer';
 
 import useSocket from '../../hooks/useSocket';
 import useParticipant from '../../hooks/useParticipant';
+import useData from '../../hooks/useData';
+
 import { GameButton, GameButtonText } from '../../components/Button';
 
 import { WinnerContainer, WinnerText, WinnerUsernameText, IWonText, ExitButtonArea } from './styles';
@@ -22,7 +24,8 @@ interface WinnerScreenProps {
 const WinnerScreen: React.FunctionComponent<WinnerScreenProps> = ({ navigation }) => {
   const [winnerUser, setWinnerUser] = useState<User | false>(false);
   const { id } = useSocket();
-  const { participants } = useParticipant();
+  const { setRoomId } = useData();
+  const { participants, clearState } = useParticipant();
 
   useEffect(() => {
     setWinnerUser(
@@ -31,9 +34,11 @@ const WinnerScreen: React.FunctionComponent<WinnerScreenProps> = ({ navigation }
     );
   }, []);
 
-  const iAmWinner = winnerUser && winnerUser.userId === id;
+  const iAmWinner = winnerUser && winnerUser.id === id;
 
   const leaveMatch = () => {
+    clearState();
+    setRoomId('');
     navigation.navigate('Home');
   };
 

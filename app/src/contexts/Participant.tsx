@@ -8,6 +8,7 @@ interface ParticipantContext {
   hostUser: User;
   participants: User[];
   kickedUserId: string;
+  clearState: () => void;
   setKickedUserId: (kickedUserId: string) => void;
 }
 
@@ -15,6 +16,7 @@ const ParticipantContext = React.createContext<ParticipantContext>({
   participants: [],
   kickedUserId: '',
   setKickedUserId: () => {},
+  clearState: () => {},
   hostUser: {
     id: '',
     username: '',
@@ -95,8 +97,20 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
     }
   }, [socketAvailable]);
 
+  const clearState = () => {
+    setParticipants([]);
+    setKickedUserId('');
+    setHostUser({
+      id: '',
+      username: '',
+      points: 0,
+      cards: [],
+      host: false
+    });
+  };
+
   return (
-    <ParticipantContext.Provider value={{ kickedUserId, setKickedUserId, hostUser, participants }}>
+    <ParticipantContext.Provider value={{ kickedUserId, setKickedUserId, hostUser, participants, clearState }}>
       {children}
     </ParticipantContext.Provider>
   );
