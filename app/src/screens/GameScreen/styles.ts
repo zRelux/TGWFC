@@ -1,5 +1,9 @@
 import styled from 'styled-components/native';
 
+export const SpaceContainer = styled.ScrollView`
+  margin-bottom: 90px;
+`;
+
 export const CardToFill = styled.View`
   height: ${({ theme }) => theme.spacing.multiple(27.5)};
   background: ${({ theme }) => theme.colors.primary};

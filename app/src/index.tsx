@@ -63,7 +63,7 @@ const App: React.FunctionComponent = () => {
                 screenOptions={{
                   headerShown: false
                 }}
-                initialRouteName={usernameInStore !== '' ? 'Game' : 'Settings'}
+                initialRouteName={usernameInStore !== '' ? 'Home' : 'Settings'}
               >
                 <Stack.Screen name="Home" component={HomeScreen} />
                 <Stack.Screen name="Start" component={StartScreen} />
