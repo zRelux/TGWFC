@@ -1,7 +1,11 @@
+import fs from 'fs';
+import path from 'path';
+
 import { Socket } from 'socket.io';
 import shortId from 'shortid';
 
-import rooms, { packs, Room } from '../../db';
+import rooms, { Room, Pack } from '../../db';
+
 import shuffle from '../../utils/shuffle';
 
 type CreatePayload = {
@@ -11,6 +15,9 @@ type CreatePayload = {
 };
 
 const createRoom = (payload: CreatePayload, socketId: string) => {
+  //@ts-ignore
+  const packs: Pack[] = JSON.parse(fs.readFileSync(path.join(__dirname, '../../db/packs.json')));
+
   const packsOfTheRoom = payload.packs.map(id => {
     return packs.filter(pack => id === pack.id)[0];
   });
