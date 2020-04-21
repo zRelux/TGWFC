@@ -46,6 +46,7 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
   const [chosenCards, setChosenCards] = useState<string[]>([]);
   const [myTurn, setMyTurn] = useState((route.params && route.params.iAmChooser) || false);
   const [thisRound, setThisRound] = useState((route.params && route.params.round) || 1);
+  const [winnerUser, setWinnerUser] = useState('');
   const [userThatChooses, setUserThatChooses] = useState(
     (route.params && route.params.chooser) || { username: 'Pippo' }
   );
@@ -55,8 +56,13 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
   const { participants } = useParticipant();
   const { send, listen, socketAvailable } = useSocket();
 
-  const enableChoose = myTurn ? (chosenCards.length === participants.length - 1 ? true : false) : true;
+  const allCardsHaveBeenChosen = chosenCards.length === participants.length - 1;
   const showChosenCards = chosenCards.length === participants.length - 1;
+
+  const dataToShow = !myTurn && !allCardsHaveBeenChosen ? myCards : chosenCards;
+  const showCard = myTurn ? (allCardsHaveBeenChosen ? true : false) : true;
+  const showButton = myTurn && allCardsHaveBeenChosen ? true : !myTurn && selectedCard === '' ? true : false;
+  const showMessage = (myTurn && chosenCards.length === 0) || winnerUser !== '';
 
   useEffect(() => {
     if (socketAvailable) {
@@ -66,15 +72,16 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
 
       listen<StartGameReplyPayload>(
         'chosenSelectedWinnerReply',
-        ({ error, card_to_show, cards, i_am_chooser, round, chooser }) => {
-          console.log({ error, card_to_show, cards, i_am_chooser, round, chooser });
-
-          if (!error) {
+        ({ error, card_to_show, cards, i_am_chooser, round, chooser, round_winner, game_finished }) => {
+          if (!error && game_finished) {
             setBlackCard(card_to_show);
             setMyTurn(i_am_chooser);
             setThisRound(round);
             setUserThatChooses(chooser);
             setMyCards(cards);
+            setSelectedCard('');
+            setChosenCards([]);
+            setWinnerUser((round_winner && round_winner.username) || '');
           } else {
             alert(error);
           }
@@ -83,12 +90,25 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
     }
   }, [socketAvailable]);
 
+  useEffect(() => {
+    let timeout: NodeJS.Timeout | null = null;
+    if (winnerUser !== '') {
+      timeout = setTimeout(() => {
+        setWinnerUser('');
+      }, 2000);
+    }
+
+    return () => {
+      if (timeout) clearTimeout(timeout);
+    };
+  }, [winnerUser]);
+
   const selectCard = (card: string, iChoose: boolean) => () => {
     if (selectedCard === '' && !iChoose) {
       setSelectedCard(card);
 
       send('chosenCard', { room_id: roomId, chosen_card: card });
-    } else if (iChoose && enableChoose) {
+    } else if (iChoose && allCardsHaveBeenChosen) {
       send('chosenSelectedWinner', { room_id: roomId, winner_card: card });
     }
   };
@@ -112,24 +132,28 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
                 : translate('GameScreen.userChoseCard')}
             </ChooseSectionText>
           </ChooseSection>
-          {myTurn && chosenCards.length === 0 && (
+          {showMessage && (
             <ChooserTextSection>
-              <ChooserText>{translate('GameScreen.czarWaiting')}</ChooserText>
+              <ChooserText>
+                {winnerUser !== ''
+                  ? translate('GameScreen.winnerUser', { name: winnerUser })
+                  : translate('GameScreen.czarWaiting')}
+              </ChooserText>
             </ChooserTextSection>
           )}
         </Content>
         <ScrollView style={{ flex: 1 }}>
-          {!(myTurn && chosenCards.length === 0) && (
+          {!showMessage && (
             <FlatList
               showsHorizontalScrollIndicator={false}
-              data={showChosenCards ? chosenCards : myCards}
+              data={dataToShow}
               horizontal={true}
               renderItem={({ item }) => (
                 <ChooseCard screenWidth={screenWidth}>
-                  {enableChoose && (
+                  {showCard && (
                     <>
                       <ChooseCardText>{item}</ChooseCardText>
-                      {!enableChoose && (
+                      {showButton && (
                         <ChooseCardButton selected={selectedCard === item} onPress={selectCard(item, myTurn)}>
                           <ChooseCardButtonText selected={selectedCard === item}>
                             {selectedCard === item

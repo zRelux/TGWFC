@@ -11,15 +11,12 @@ type WinnerPayload = {
   winner_card: string;
 };
 
-const winnerRound = (payload: WinnerPayload, socketId: string): [Room, RoomUser | undefined] => {
+const winnerRound = (payload: WinnerPayload, socketId: string): [Room, RoomUser | undefined, boolean | undefined] => {
   const room = findRoom(payload.room_id);
 
   if (room) {
+    const gameFinished = room.numberOfRounds === 0;
     room.roundsPlayed++;
-
-    if (room.numberOfRounds === 0) {
-      throw new Error('Game has finished');
-    }
 
     room.numberOfRounds--;
 
@@ -37,7 +34,7 @@ const winnerRound = (payload: WinnerPayload, socketId: string): [Room, RoomUser 
       });
 
       room.users.forEach(user => {
-        user.cards = assingCards(room, 1);
+        user.cards.concat(assingCards(room, 1));
       });
 
       if (room.chooser) {
@@ -49,10 +46,12 @@ const winnerRound = (payload: WinnerPayload, socketId: string): [Room, RoomUser 
         room.chooser = { index: newIndex, user: room.users[newIndex] };
       }
 
-      return [room, winnerUser];
+      room.chosenCards = [];
+
+      return [room, winnerUser, gameFinished];
     }
 
-    return [room, undefined];
+    return [room, undefined, false];
   } else {
     throw new Error('Room not found');
   }
@@ -61,7 +60,7 @@ const winnerRound = (payload: WinnerPayload, socketId: string): [Room, RoomUser 
 export default (socket: Socket, io: socketIO.Server) => {
   socket.on('chosenSelectedWinner', (payload: WinnerPayload) => {
     try {
-      const [room, winner] = winnerRound(payload, socket.id);
+      const [room, winner, gameFinished] = winnerRound(payload, socket.id);
 
       room.users.forEach(user => {
         let iAmChooser = false;
@@ -74,13 +73,22 @@ export default (socket: Socket, io: socketIO.Server) => {
           card_to_show: room.cardsToFill.cards[room.cardsToFill.index],
           cards: user.cards,
           i_am_chooser: iAmChooser,
-          chooser: room.chooser,
+          chooser: room.chooser && room.chooser.user,
           round: room.roundsPlayed,
-          round_winner: winner
+          round_winner: winner,
+          game_finished: gameFinished
         });
-
-        room.cardsToFill.index = addWithBounds(room.cardsToFill.index, room.cardsToGive.cards.length);
       });
+
+      const index = room.users.findIndex(user => user.host === true);
+      const user = room.users[index];
+
+      io.to(room.id).emit('updatedRoomReply', {
+        room_host: user,
+        lobby_users: room.users
+      });
+
+      room.cardsToFill.index = addWithBounds(room.cardsToFill.index, room.cardsToGive.cards.length);
     } catch (error) {
       socket.emit('chosenSelectedWinnerReply', {
         error: error.message

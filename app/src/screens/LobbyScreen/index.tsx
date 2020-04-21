@@ -47,6 +47,8 @@ export type StartGameReplyPayload = {
   round: number;
   chooser: User;
   error?: string;
+  round_winner?: User;
+  game_finished: boolean;
 };
 
 const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, route }) => {

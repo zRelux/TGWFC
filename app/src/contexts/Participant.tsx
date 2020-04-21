@@ -66,6 +66,16 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
         }
       });
 
+      listen<JoinRoomPayload>('updatedRoomReply', ({ room_host, lobby_users }) => {
+        if (room_host) {
+          setHostUser(room_host);
+        }
+
+        if (lobby_users) {
+          setParticipants(lobby_users);
+        }
+      });
+
       listen<DisconnectedPayload>('kickUserReply', ({ user_left }) => {
         setKickedUserId(user_left.userId);
         setParticipants((oldParticipants) => {

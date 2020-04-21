@@ -18,6 +18,7 @@ import LobbyScreen from './screens/LobbyScreen';
 import SettingsScreen from './screens/SettingsScreen';
 import GameScreen from './screens/GameScreen';
 import JoinScreen from './screens/JoinScreen';
+import WinnerScreen from './screens/WinnerScreen';
 
 export type RootStackParamList = {
   Home: { msg?: string };
@@ -25,6 +26,7 @@ export type RootStackParamList = {
   Lobby: { username?: string };
   Join: undefined;
   Game: { cardToShow: string; cards: string[]; iAmChooser: boolean; round: number; chooser: User };
+  Winner: undefined;
   Settings: undefined;
 };
 
@@ -70,6 +72,7 @@ const App: React.FunctionComponent = () => {
                 <Stack.Screen name="Join" component={JoinScreen} />
                 <Stack.Screen name="Lobby" component={LobbyScreen} />
                 <Stack.Screen name="Game" component={GameScreen} />
+                <Stack.Screen name="Winner" component={WinnerScreen} />
                 <Stack.Screen name="Settings" component={SettingsScreen} />
               </Stack.Navigator>
             </NavigationContainer>

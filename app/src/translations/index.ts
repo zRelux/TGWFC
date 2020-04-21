@@ -14,4 +14,4 @@ i18n.locale = Localization.locale;
 
 i18n.fallbacks = true;
 
-export const translate = (string: string) => i18n.t(string);
+export const translate = (string: string, extra?: any) => i18n.t(string, extra);

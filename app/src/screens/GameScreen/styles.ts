@@ -5,6 +5,8 @@ export const SpaceContainer = styled.ScrollView`
 `;
 
 export const CardToFill = styled.View`
+  padding: ${({ theme }) => theme.spacing.double};
+
   height: ${({ theme }) => theme.spacing.multiple(27.5)};
   background: ${({ theme }) => theme.colors.primary};
   elevation: 3;
@@ -14,8 +16,6 @@ export const CardToFill = styled.View`
 
 export const CardToFillText = styled.Text`
   font-size: 28px;
-  margin-top: ${({ theme }) => theme.spacing.double};
-  margin-left: ${({ theme }) => theme.spacing.double};
 
   color: ${({ theme }) => theme.colors.primaryText};
 `;

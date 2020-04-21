@@ -36,7 +36,13 @@ export default {
     czarChoosing: 'Choose the funnier card',
     czarWaiting: 'You are the Card Czar.',
     cardButtonChoose: 'Select',
-    cardButtonChosen: 'Selected'
+    cardButtonChosen: 'Selected',
+    winnerUser: '%{name} won the round!!'
+  },
+  WinnerScreen: {
+    winnerText: 'The winner is',
+    iWonText: 'You won the game',
+    exitButton: 'Exit the match'
   },
   SettingsScreen: {
     pageHeader: 'Settings',
