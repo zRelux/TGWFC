@@ -4,13 +4,14 @@ import path from 'path';
 import express from 'express';
 
 import rooms, { Pack } from '../../db';
+import shuffle from '../../utils/shuffle';
 
 const router = express.Router();
 
 router.get('/', (_, res) => {
   const packsFile = fs.readFileSync(path.join(__dirname, '..', '..', 'db/packs.json'));
   // @ts-ignore
-  const packs: Pack[] = JSON.parse(packsFile);
+  const packs: Pack[] = shuffle(JSON.parse(packsFile));
 
   const packsToSend = packs.map(pack => {
     return {

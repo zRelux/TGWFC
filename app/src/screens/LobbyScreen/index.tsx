@@ -58,8 +58,6 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
   useEffect(() => {
     if (socketAvailable) {
       listen<RoomUpdatePayload>('joinRoomReply', (payload) => {
-        console.log('joinRoomReply Payload', payload);
-
         if (payload.error) {
           navigation.navigate('Home', { msg: payload.error });
         }

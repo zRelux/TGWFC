@@ -95,7 +95,8 @@ const App: React.FunctionComponent = () => {
             <NavigationContainer initialState={initialState} ref={ref}>
               <Stack.Navigator
                 screenOptions={{
-                  headerShown: false
+                  headerShown: false,
+                  gestureEnabled: false
                 }}
                 initialRouteName={usernameInStore !== '' ? 'Home' : 'Settings'}
               >
