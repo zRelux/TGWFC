@@ -12,7 +12,7 @@ const leaveRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser, Roo
   const roomToClose = findRoom(payload.room_id);
 
   if (roomToClose) {
-    const index = roomToClose.users.findIndex(user => user.userId === socketId);
+    const index = roomToClose.users.findIndex(user => user.id === socketId);
     const user = roomToClose.users[index];
 
     roomToClose.users = [...roomToClose.users.slice(0, index), ...roomToClose.users.slice(index + 1)];

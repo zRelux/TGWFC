@@ -49,7 +49,7 @@ const BottomSheet: React.FunctionComponent<BottomSheetProps> = ({
       </GameButton>
       {!goBackFalsy && goBack && (
         <BackButton onPress={goBackMethod}>
-          <BackText>{translate('SettingsScreen.goBackButton')}</BackText>
+          <BackText>{translate('goBackButton')}</BackText>
         </BackButton>
       )}
     </BottomSheetContainer>

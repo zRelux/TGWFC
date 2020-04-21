@@ -5,11 +5,13 @@ export type Pack = {
   toUse: string[];
 };
 
+export type Card = { userId: string; card: string };
+
 export type RoomUser = {
+  id: string;
   username: string;
-  userId: string;
   points: number;
-  cards: string[];
+  cards: Card[];
   host: boolean;
 };
 
@@ -21,7 +23,7 @@ export type Room = {
   numberOfRounds: number;
   roundsPlayed: number;
   chooser?: { index: number; user: RoomUser };
-  chosenCards: { userId: string; card: string }[];
+  chosenCards: Card[];
 };
 
 let rooms: Room[] = [];

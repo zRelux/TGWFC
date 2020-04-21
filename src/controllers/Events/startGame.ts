@@ -8,7 +8,7 @@ type StartPayload = {
   room_id: string;
 };
 
-export const startGame = (payload: StartPayload) => {
+export const startGame = (payload: StartPayload, userId: string) => {
   const room = findRoom(payload.room_id);
 
   if (room) {
@@ -25,7 +25,7 @@ export const startGame = (payload: StartPayload) => {
     room.chooser = { index: 0, user: room.users[0] };
 
     room.users.forEach(user => {
-      user.cards = assingCards(room, 6);
+      user.cards = assingCards(room, 6, userId);
     });
 
     return room;
@@ -37,16 +37,16 @@ export const startGame = (payload: StartPayload) => {
 export default (socket: Socket, io: socketIO.Server) => {
   socket.on('startGame', (payload: StartPayload) => {
     try {
-      const room = startGame(payload);
+      const room = startGame(payload, socket.id);
 
       room.users.forEach(user => {
         let iAmChooser = false;
 
         if (room.chooser) {
-          iAmChooser = user.userId === room.chooser.user.userId;
+          iAmChooser = user.id === room.chooser.user.id;
         }
 
-        io.to(user.userId).emit('startGameReply', {
+        io.to(user.id).emit('startGameReply', {
           card_to_show: room.cardsToFill.cards[room.cardsToFill.index],
           cards: user.cards,
           i_am_chooser: iAmChooser,

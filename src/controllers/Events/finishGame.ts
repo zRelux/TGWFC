@@ -39,6 +39,12 @@ export default (socket: Socket, io: socketIO.Server) => {
       io.to(room.id).emit('finishGameReply', {
         winner
       });
+
+      room.users.forEach(user => {
+        if (io.sockets.connected[user.id]) {
+          io.sockets.connected[user.id].leave(room.id);
+        }
+      });
     } catch (error) {
       socket.emit('finishGameReply', {
         error: error.message

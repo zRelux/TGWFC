@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Dimensions, FlatList, ScrollView } from 'react-native';
 
 import { RouteProp } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../..';
 
 import ScreenContainer, { Content } from '../../components/ScreenContainer';
@@ -11,7 +12,10 @@ import Game from '../../components/BottomSheet/Game';
 import useData from '../../hooks/useData';
 import useSocket from '../../hooks/useSocket';
 import useParticipant from '../../hooks/useParticipant';
-import { StartGameReplyPayload } from '../LobbyScreen';
+
+import { Card } from '../../types/User';
+
+import { translate } from '../../translations';
 
 import {
   CardToFill,
@@ -26,31 +30,29 @@ import {
   ChooserText,
   SpaceContainer
 } from './styles';
-import { translate } from '../../translations';
+import { GameReplyPayload } from '../../types/Payloads';
 
 interface GameScreenProps {
   route: RouteProp<RootStackParamList, 'Game'>;
+  navigation: StackNavigationProp<RootStackParamList, 'Game'>;
 }
 
 type ChosenCardReplyPayload = {
-  chosen_cards: string[];
+  chosen_cards: Card[];
 };
 
 const screenWidth = Dimensions.get('screen').width;
 
-const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
-  const [blackCard, setBlackCard] = useState((route.params && route.params.cardToShow) || 'Crad');
-  const [myCards, setMyCards] = useState<string[]>(
-    (route.params && route.params.cards) || ['Card 1', 'Card 2', 'Card 3', 'Card 4']
-  );
-  const [chosenCards, setChosenCards] = useState<string[]>([]);
-  const [myTurn, setMyTurn] = useState((route.params && route.params.iAmChooser) || false);
-  const [thisRound, setThisRound] = useState((route.params && route.params.round) || 1);
+const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route, navigation }) => {
+  const [blackCard, setBlackCard] = useState(route.params.cardToShow);
+  const [myCards, setMyCards] = useState<Card[]>(route.params.cards);
+  const [chosenCards, setChosenCards] = useState<Card[]>([]);
+  const [myTurn, setMyTurn] = useState(route.params.iAmChooser);
+  const [thisRound, setThisRound] = useState(route.params.round);
   const [winnerUser, setWinnerUser] = useState('');
-  const [userThatChooses, setUserThatChooses] = useState(
-    (route.params && route.params.chooser) || { username: 'Pippo' }
-  );
-  const [selectedCard, setSelectedCard] = useState('');
+  const [userThatChooses, setUserThatChooses] = useState(route.params.chooser);
+
+  const [selectedCard, setSelectedCard] = useState<Card>();
 
   const { roomId } = useData();
   const { participants } = useParticipant();
@@ -61,7 +63,7 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
 
   const dataToShow = !myTurn && !allCardsHaveBeenChosen ? myCards : chosenCards;
   const showCard = myTurn ? (allCardsHaveBeenChosen ? true : false) : true;
-  const showButton = myTurn && allCardsHaveBeenChosen ? true : !myTurn && selectedCard === '' ? true : false;
+  const showButton = myTurn && allCardsHaveBeenChosen ? true : !myTurn && !selectedCard ? true : false;
   const showMessage = (myTurn && chosenCards.length === 0) || winnerUser !== '';
 
   useEffect(() => {
@@ -70,20 +72,28 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
         setChosenCards(chosen_cards);
       });
 
-      listen<StartGameReplyPayload>(
+      listen<ChosenCardReplyPayload>('finishGameReply', () => {
+        navigation.navigate('Winner');
+      });
+
+      listen<GameReplyPayload>(
         'chosenSelectedWinnerReply',
         ({ error, card_to_show, cards, i_am_chooser, round, chooser, round_winner, game_finished }) => {
-          if (!error && game_finished) {
+          if (!error && !game_finished) {
             setBlackCard(card_to_show);
             setMyTurn(i_am_chooser);
             setThisRound(round);
             setUserThatChooses(chooser);
             setMyCards(cards);
-            setSelectedCard('');
+            setSelectedCard(undefined);
             setChosenCards([]);
             setWinnerUser((round_winner && round_winner.username) || '');
           } else {
-            alert(error);
+            if (game_finished) {
+              send('finishGame', { room_id: roomId });
+            } else {
+              alert(error);
+            }
           }
         }
       );
@@ -103,8 +113,8 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
     };
   }, [winnerUser]);
 
-  const selectCard = (card: string, iChoose: boolean) => () => {
-    if (selectedCard === '' && !iChoose) {
+  const selectCard = (card: Card, iChoose: boolean) => () => {
+    if (!selectedCard && !iChoose) {
       setSelectedCard(card);
 
       send('chosenCard', { room_id: roomId, chosen_card: card });
@@ -127,7 +137,7 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
                 ? translate('GameScreen.czarChoosing')
                 : showChosenCards
                 ? translate('GameScreen.userWaitingCzar')
-                : selectedCard !== '' || myTurn
+                : !selectCard || myTurn
                 ? translate('GameScreen.waiting')
                 : translate('GameScreen.userChoseCard')}
             </ChooseSectionText>
@@ -152,11 +162,14 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
                 <ChooseCard screenWidth={screenWidth}>
                   {showCard && (
                     <>
-                      <ChooseCardText>{item}</ChooseCardText>
+                      <ChooseCardText>{item.card}</ChooseCardText>
                       {showButton && (
-                        <ChooseCardButton selected={selectedCard === item} onPress={selectCard(item, myTurn)}>
-                          <ChooseCardButtonText selected={selectedCard === item}>
-                            {selectedCard === item
+                        <ChooseCardButton
+                          selected={selectedCard?.card === item.card}
+                          onPress={selectCard(item, myTurn)}
+                        >
+                          <ChooseCardButtonText selected={selectedCard?.card === item.card}>
+                            {selectedCard?.card === item.card
                               ? translate('GameScreen.cardButtonChosen')
                               : translate('GameScreen.cardButtonChoose')}
                           </ChooseCardButtonText>
@@ -166,7 +179,7 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route }) => {
                   )}
                 </ChooseCard>
               )}
-              keyExtractor={(card) => card}
+              keyExtractor={({ card }) => card}
             />
           )}
         </ScrollView>

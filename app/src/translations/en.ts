@@ -37,7 +37,14 @@ export default {
     czarWaiting: 'You are the Card Czar.',
     cardButtonChoose: 'Select',
     cardButtonChosen: 'Selected',
-    winnerUser: '%{name} won the round!!'
+    winnerUser: '%{name} won the round!!',
+    GameBottomSheet: {
+      roundText: 'Round:',
+      czarText: 'Card Czar:',
+      leaderboardText: 'Leaderboard:',
+      ptMsg: 'pt.',
+      exitButton: 'Leave the match'
+    }
   },
   WinnerScreen: {
     winnerText: 'The winner is',
@@ -53,9 +60,9 @@ export default {
       second:
         ' clone. You can buy the game at their website or print the cardsyourself. TGWFC is completely free to use and is in no way endorsed or sponsored by ',
       secondBold: `cardsagainsthumanity.com.`
-    },
-    noSaveButton: 'Please insert your username',
-    saveButton: 'Save',
-    goBackButton: 'Go Back'
-  }
+    }
+  },
+  goBackButton: 'Go Back',
+  saveButton: 'Save',
+  noSaveButton: 'Please insert name'
 };

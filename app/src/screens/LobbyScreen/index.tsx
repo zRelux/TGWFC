@@ -15,9 +15,10 @@ import ScreenContainer from '../../components/ScreenContainer';
 import useData from '../../hooks/useData';
 import useSocket from '../../hooks/useSocket';
 import useParticipant from '../../hooks/useParticipant';
-import { User } from '../../contexts/Participant';
-
 import { translate } from '../../translations';
+
+import { User } from '../../types/User';
+import { GameReplyPayload } from '../../types/Payloads';
 
 import {
   HostCard,
@@ -40,49 +41,33 @@ interface LobbyScreenProps {
   route: RouteProp<RootStackParamList, 'Lobby'>;
 }
 
-export type StartGameReplyPayload = {
-  card_to_show: string;
-  cards: string[];
-  i_am_chooser: boolean;
-  round: number;
-  chooser: User;
-  error?: string;
-  round_winner?: User;
-  game_finished: boolean;
-};
-
 const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, route }) => {
   const { roomId } = useData();
   const { kickedUserId, participants, hostUser, setKickedUserId } = useParticipant();
   const { send, id, listen, socketAvailable } = useSocket();
 
   const hostUsername = route.params && route.params.username ? route.params.username : hostUser.username;
-  const iAmHost = route.params && route.params.username ? true : hostUser && hostUser.userId === id;
+  const iAmHost = route.params && route.params.username ? true : hostUser && hostUser.id === id;
 
   const notEnoughParticipants = participants.length - 1 < 2 || participants.length > 10;
   const emptyRoom = participants.length - 1 <= 0;
-  const lobbyParticipants = participants.filter((part) => part.userId !== id);
+  const lobbyParticipants = participants.filter((part) => part.id !== id);
 
   useEffect(() => {
     if (socketAvailable) {
-      listen<StartGameReplyPayload>(
-        'startGameReply',
-        ({ error, card_to_show, cards, i_am_chooser, round, chooser }) => {
-          console.log({ error, card_to_show, cards, i_am_chooser, round, chooser });
-
-          if (!error) {
-            navigation.navigate('Game', {
-              cardToShow: card_to_show,
-              cards,
-              iAmChooser: i_am_chooser,
-              round,
-              chooser
-            });
-          } else {
-            alert(error);
-          }
+      listen<GameReplyPayload>('startGameReply', ({ error, card_to_show, cards, i_am_chooser, round, chooser }) => {
+        if (!error) {
+          navigation.navigate('Game', {
+            cardToShow: card_to_show,
+            cards,
+            iAmChooser: i_am_chooser,
+            round,
+            chooser
+          });
+        } else {
+          alert(error);
         }
-      );
+      });
     }
   }, [socketAvailable]);
 
@@ -105,7 +90,7 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
 
   const kickUser = (userToKick: User) => () => {
     send('kickUser', {
-      user_id: userToKick.userId,
+      user_id: userToKick.id,
       room_id: roomId
     });
   };
@@ -147,7 +132,7 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
           <FlatList
             data={lobbyParticipants}
             renderItem={({ item }) => (
-              <ParticipantCard key={item.userId}>
+              <ParticipantCard key={item.id}>
                 <ParticipantCardText>{item.username}</ParticipantCardText>
                 {iAmHost && (
                   <RemoveUserButton onPress={kickUser(item)}>
@@ -156,7 +141,7 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
                 )}
               </ParticipantCard>
             )}
-            keyExtractor={(partecipant) => partecipant.userId}
+            keyExtractor={(partecipant) => partecipant.id}
           />
         )}
       </ParticipantSection>

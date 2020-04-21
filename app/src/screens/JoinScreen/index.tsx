@@ -3,21 +3,18 @@ import React, { useEffect } from 'react';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../..';
 
-import { JoinRoomPayload } from '../../contexts/Participant';
-
 import { translate } from '../../translations';
 
 import { Content } from '../../components/ScreenContainer';
 import ScreenContainer from '../../components/ScreenContainer';
 import BottomSheet from '../../components/BottomSheet';
 
-import { StartHeader } from '../StartScreen/styles';
-
 import useSocket from '../../hooks/useSocket';
 import useData from '../../hooks/useData';
 
-import { RoomIDInputText, RoomIDInput } from './styles';
+import { RoomUpdatePayload } from '../../types/Payloads';
 
+import { RoomIDInputText, RoomIDInput, StartHeader } from './styles';
 interface JoinScreenProps {
   navigation: StackNavigationProp<RootStackParamList, 'Join'>;
 }
@@ -30,7 +27,7 @@ const JoinScreen: React.FunctionComponent<JoinScreenProps> = ({ navigation }) =>
 
   useEffect(() => {
     if (socketAvailable) {
-      listen<JoinRoomPayload>('joinRoomReply', ({ error }) => {
+      listen<RoomUpdatePayload>('joinRoomReply', ({ error }) => {
         if (!error) {
           navigation.navigate('Lobby');
         } else {

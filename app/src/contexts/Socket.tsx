@@ -62,11 +62,7 @@ export const SocketProvider: React.FunctionComponent<SocketProviderProps> = ({ c
 
   const listen = <T extends object>(key: string, callback: (payload: T) => void) => {
     if (socket) {
-      socket.on(key, (payload: T) => {
-        console.log(key, payload);
-
-        callback(payload);
-      });
+      socket.on(key, callback);
     }
   };
 

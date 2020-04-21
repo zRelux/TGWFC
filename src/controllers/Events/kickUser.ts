@@ -12,8 +12,8 @@ const kickUser = (payload: JoinPayload): [Room, RoomUser] => {
   const room = findRoom(payload.room_id);
 
   if (room) {
-    if (room.users.find(user => user.userId === payload.user_id)) {
-      const index = room.users.findIndex(user => user.userId === payload.user_id);
+    if (room.users.find(user => user.id === payload.user_id)) {
+      const index = room.users.findIndex(user => user.id === payload.user_id);
       const user = room.users[index];
 
       room.users = [...room.users.slice(0, index), ...room.users.slice(index + 1)];

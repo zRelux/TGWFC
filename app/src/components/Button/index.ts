@@ -22,7 +22,6 @@ export const Button = styled.TouchableOpacity<ButtonProps>`
 export const ButtonText = styled.Text`
   font-size: 28px;
   color: ${({ theme }) => theme.colors.primaryText};
-  opacity: 1;
 `;
 
 interface GameButtonProps {

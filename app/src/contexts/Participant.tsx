@@ -1,24 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import useSocket from '../hooks/useSocket';
 
-export type User = {
-  userId: string;
-  username: string;
-  points: number;
-  cards: string[];
-  host: boolean;
-};
-
-type DisconnectedPayload = {
-  user_left: User;
-  new_host?: User;
-};
-
-export type JoinRoomPayload = {
-  room_host: User;
-  lobby_users: User[];
-  error?: string;
-};
+import { User } from '../types/User';
+import { LeavePayload, RoomUpdatePayload } from '../types/Payloads';
 
 interface ParticipantContext {
   hostUser: User;
@@ -32,7 +16,7 @@ const ParticipantContext = React.createContext<ParticipantContext>({
   kickedUserId: '',
   setKickedUserId: () => {},
   hostUser: {
-    userId: '',
+    id: '',
     username: '',
     points: 0,
     cards: [],
@@ -44,7 +28,7 @@ interface ParticipantProviderProps {}
 
 export const ParticipantProvider: React.FunctionComponent<ParticipantProviderProps> = ({ children }) => {
   const [hostUser, setHostUser] = useState<User>({
-    userId: '',
+    id: '',
     username: '',
     points: 0,
     cards: [],
@@ -56,7 +40,7 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
 
   useEffect(() => {
     if (socketAvailable) {
-      listen<JoinRoomPayload>('joinRoomReply', ({ room_host, lobby_users }) => {
+      listen<RoomUpdatePayload>('joinRoomReply', ({ room_host, lobby_users }) => {
         if (room_host) {
           setHostUser(room_host);
         }
@@ -66,7 +50,7 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
         }
       });
 
-      listen<JoinRoomPayload>('updatedRoomReply', ({ room_host, lobby_users }) => {
+      listen<RoomUpdatePayload>('updatedRoomReply', ({ room_host, lobby_users }) => {
         if (room_host) {
           setHostUser(room_host);
         }
@@ -76,17 +60,17 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
         }
       });
 
-      listen<DisconnectedPayload>('kickUserReply', ({ user_left }) => {
-        setKickedUserId(user_left.userId);
+      listen<LeavePayload>('kickUserReply', ({ user_left }) => {
+        setKickedUserId(user_left.id);
         setParticipants((oldParticipants) => {
           const tmpArr = [...oldParticipants];
 
-          const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
+          const index = tmpArr.findIndex((participant) => participant.id === user_left.id);
           return [...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)];
         });
       });
 
-      listen<DisconnectedPayload>('leaveRoomReply', ({ new_host, user_left }) => {
+      listen<LeavePayload>('leaveRoomReply', ({ new_host, user_left }) => {
         if (new_host) {
           setHostUser(new_host);
         }
@@ -94,17 +78,17 @@ export const ParticipantProvider: React.FunctionComponent<ParticipantProviderPro
         setParticipants((oldParticipants) => {
           const tmpArr = [...oldParticipants];
 
-          const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
+          const index = tmpArr.findIndex((participant) => participant.id === user_left.id);
 
           return [...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)];
         });
       });
 
-      listen<DisconnectedPayload>('userDisconnected', ({ user_left }) => {
+      listen<LeavePayload>('userDisconnected', ({ user_left }) => {
         setParticipants((oldParticipants) => {
           const tmpArr = [...oldParticipants];
 
-          const index = tmpArr.findIndex((participant) => participant.userId === user_left.userId);
+          const index = tmpArr.findIndex((participant) => participant.id === user_left.id);
           return [...tmpArr.slice(0, index), ...tmpArr.slice(index + 1)];
         });
       });

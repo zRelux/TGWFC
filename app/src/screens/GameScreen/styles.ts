@@ -42,6 +42,8 @@ export const ChooseCard = styled.View<ChooseCardProps>`
   margin-bottom: ${({ theme }) => theme.spacing.double};
   margin-left: ${({ theme }) => theme.spacing.double};
 
+  padding: ${({ theme }) => theme.spacing.oneAndHalf};
+
   height: ${({ theme }) => theme.spacing.multiple(27.5)};
   background: ${({ theme }) => theme.colors.primaryText};
   elevation: 3;
@@ -50,9 +52,6 @@ export const ChooseCard = styled.View<ChooseCardProps>`
 `;
 
 export const ChooseCardText = styled.Text`
-  margin-top: ${({ theme }) => theme.spacing.oneAndHalf};
-  margin-left: ${({ theme }) => theme.spacing.oneAndHalf};
-
   font-size: 28px;
 `;
 
@@ -67,9 +66,6 @@ export const ChooseCardButton = styled.TouchableOpacity<ChooseCardButtonProps>`
 
   margin-top: auto;
   margin-left: auto;
-
-  margin-right: ${({ theme }) => theme.spacing.oneAndHalf};
-  margin-bottom: ${({ theme }) => theme.spacing.oneAndHalf};
 
   padding: ${({ theme }) => theme.spacing.oneAndHalf} ${({ theme }) => theme.spacing.multiple(4)};
 

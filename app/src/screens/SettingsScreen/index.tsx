@@ -47,8 +47,8 @@ const SettingsScreen: React.FunctionComponent<SettingsScreenProps> = ({ navigati
         falsyAction={empty}
         callOnTruth={saveName}
         copy={{
-          actionFalsy: translate('SettingsScreen.noSaveButton'),
-          actionTruthy: translate('SettingsScreen.saveButton')
+          actionFalsy: translate('noSaveButton'),
+          actionTruthy: translate('saveButton')
         }}
       />
     </ScreenContainer>

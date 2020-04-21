@@ -29,21 +29,11 @@ export const RoomIDInput = styled.TextInput`
   border-radius: ${({ theme }) => theme.spacing.double};
 `;
 
-export const DisclaimerView = styled.View`
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
+export const StartHeader = styled.Text`
+  font-size: 34px;
+  font-weight: bold;
+  width: ${({ theme }) => theme.spacing.multiple(34)};
 
-  margin-top: ${({ theme }) => theme.spacing.multiple(22.5)};
-  margin-right: ${({ theme }) => theme.spacing.double};
-  margin-bottom: ${({ theme }) => theme.spacing.double};
-`;
-
-interface DisclaimerTextProps {
-  bold?: boolean;
-}
-
-export const DisclaimerText = styled.Text<DisclaimerTextProps>`
-  font-size: 18px;
-  ${({ bold }) => bold && `font-weight: bold`};
+  margin-top: ${({ theme }) => theme.spacing.multiple(5)};
+  color: ${({ theme }) => theme.colors.primary};
 `;

@@ -11,7 +11,7 @@ import useParticipant from '../../../hooks/useParticipant';
 import useSocket from '../../../hooks/useSocket';
 import useData from '../../../hooks/useData';
 
-import { User } from '../../../contexts/Participant';
+import { User } from '../../../types/User';
 
 import {
   BottomSheetHeader,
@@ -54,13 +54,17 @@ const Game: React.FunctionComponent<GameProps> = ({ round, chooser }) => {
       <BottomSheetHeader>
         <PanelHandle />
         <TextContainer>
-          <BottomSheetHeaderTopText color="tertiary">Round:</BottomSheetHeaderTopText>
+          <BottomSheetHeaderTopText color="tertiary">
+            {translate('GameScreen.GameBottomSheet.roundText')}
+          </BottomSheetHeaderTopText>
           <BottomSheetHeaderTopText color="primaryText" marginOff>
             {round}
           </BottomSheetHeaderTopText>
         </TextContainer>
         <TextContainer>
-          <BottomSheetHeaderSecondText color="tertiary">Card Czar:</BottomSheetHeaderSecondText>
+          <BottomSheetHeaderSecondText color="tertiary">
+            {translate('GameScreen.GameBottomSheet.czarText')}
+          </BottomSheetHeaderSecondText>
           <BottomSheetHeaderSecondText color="primaryText" marginOff>
             {chooser.username}
           </BottomSheetHeaderSecondText>
@@ -73,7 +77,9 @@ const Game: React.FunctionComponent<GameProps> = ({ round, chooser }) => {
     return (
       <BottomSheetContent>
         <TextContainer>
-          <BottomSheetHeaderTopText color="primaryText">Leaderboard:</BottomSheetHeaderTopText>
+          <BottomSheetHeaderTopText color="primaryText">
+            {translate('GameScreen.GameBottomSheet.leaderboardText')}
+          </BottomSheetHeaderTopText>
         </TextContainer>
         <LeaderboardContainer>
           <FlatList
@@ -82,17 +88,19 @@ const Game: React.FunctionComponent<GameProps> = ({ round, chooser }) => {
               <>
                 <UserSection>
                   <UserSectionText>{item.username}</UserSectionText>
-                  <UserSectionText>{item.points} pt.</UserSectionText>
+                  <UserSectionText>
+                    {item.points} {translate('GameScreen.GameBottomSheet.ptMsg')}
+                  </UserSectionText>
                 </UserSection>
                 <Divider />
               </>
             )}
-            keyExtractor={(user) => user.userId}
+            keyExtractor={(user) => user.id}
           />
         </LeaderboardContainer>
         <LeaveButtonSection>
           <GameButton background="primaryText" onPress={leaveMatch}>
-            <GameButtonText color="error">{translate('LobbyScreen.exitButton')}</GameButtonText>
+            <GameButtonText color="error">{translate('GameScreen.GameBottomSheet.exitButton')}</GameButtonText>
           </GameButton>
         </LeaveButtonSection>
       </BottomSheetContent>

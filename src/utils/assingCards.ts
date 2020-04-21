@@ -2,7 +2,7 @@ import { Room } from '../db';
 
 import addWithBounds from './addWithBounds';
 
-export default (room: Room, many: number) => {
+export default (room: Room, many: number, userId: string) => {
   const cardsToAdd = [];
 
   for (let i = 0; i < many; i++) {
@@ -10,7 +10,7 @@ export default (room: Room, many: number) => {
 
     const card = room.cardsToGive.cards[room.cardsToGive.index];
 
-    cardsToAdd.push(card);
+    cardsToAdd.push({ userId, card });
   }
 
   return cardsToAdd;

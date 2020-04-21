@@ -3,11 +3,11 @@ import socketIO, { Socket } from 'socket.io';
 import rooms, { updateRooms } from '../../db';
 
 const findRoomToDisconnect = (socketId: string) => {
-  const roomToLeave = rooms.find(roomToFind => roomToFind.users.find(user => user.userId === socketId));
+  const roomToLeave = rooms.find(roomToFind => roomToFind.users.find(user => user.id === socketId));
 
   if (roomToLeave) {
-    const leftUser = roomToLeave.users.find(user => user.userId === socketId);
-    roomToLeave.users = roomToLeave.users.filter(user => user.userId !== socketId);
+    const leftUser = roomToLeave.users.find(user => user.id === socketId);
+    roomToLeave.users = roomToLeave.users.filter(user => user.id !== socketId);
 
     if (roomToLeave.users.length === 0) {
       updateRooms(rooms.filter(room => room.id !== roomToLeave.id));

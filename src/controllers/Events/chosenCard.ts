@@ -1,10 +1,11 @@
 import socketIO, { Socket } from 'socket.io';
 
+import { Card } from '../../db';
 import findRoom from '../../utils/findRoom';
 
 type ChosenCard = {
   room_id: string;
-  chosen_card: string;
+  chosen_card: Card;
 };
 
 const chosenCard = (payload: ChosenCard, userId: string) => {
@@ -12,15 +13,15 @@ const chosenCard = (payload: ChosenCard, userId: string) => {
 
   if (room) {
     if (room.chooser)
-      if (room.chooser.user.userId === userId) {
+      if (room.chooser.user.id === userId) {
         throw new Error('You are the chooser');
       }
 
-    room.chosenCards.push({ userId, card: payload.chosen_card });
+    room.chosenCards.push({ userId, card: payload.chosen_card.card });
 
     room.users.forEach(user => {
-      if (user.userId === userId) {
-        user.cards = user.cards.filter(card => card !== payload.chosen_card);
+      if (user.id === userId) {
+        user.cards = user.cards.filter(({ card }) => card !== payload.chosen_card.card);
       }
     });
 
@@ -36,7 +37,7 @@ export default (socket: Socket, io: socketIO.Server) => {
       const room = chosenCard(payload, socket.id);
 
       io.to(room.id).emit('chosenCardReply', {
-        chosen_cards: room.chosenCards.map(({ card }) => card)
+        chosen_cards: room.chosenCards
       });
     } catch (error) {
       socket.emit('chosenCardReply', {

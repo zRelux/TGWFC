@@ -32,7 +32,7 @@ const createRoom = (payload: CreatePayload, socketId: string) => {
     chosenCards: [],
     roundsPlayed: 0,
     numberOfRounds: payload.number_of_rounds,
-    users: [{ username: payload.username, userId: socketId, points: 0, cards: [], host: true }]
+    users: [{ username: payload.username, id: socketId, points: 0, cards: [], host: true }]
   };
 
   rooms.push(roomToAdd);
@@ -49,7 +49,7 @@ export default (socket: Socket) => {
     socket.emit('createRoomReply', {
       room: {
         id,
-        host: { username: payload.username, userId: socket.id, points: 0, cards: [], host: true }
+        host: { username: payload.username, id: socket.id, points: 0, cards: [], host: true }
       }
     });
   });

@@ -14,7 +14,7 @@ const joinRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser] => {
   if (room) {
     room.users.push({
       username: payload.username,
-      userId: socketId,
+      id: socketId,
       points: 0,
       cards: [],
       host: false

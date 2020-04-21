@@ -7,8 +7,10 @@ import { createStackNavigator } from '@react-navigation/stack';
 import theme from './theme';
 
 import { SocketProvider } from './contexts/Socket';
-import { ParticipantProvider, User } from './contexts/Participant';
+import { ParticipantProvider } from './contexts/Participant';
 import { DataProvider } from './contexts/Data';
+
+import { User, Card } from './types/User';
 
 import { getUsername } from './utils/storage';
 
@@ -25,7 +27,7 @@ export type RootStackParamList = {
   Start: undefined;
   Lobby: { username?: string };
   Join: undefined;
-  Game: { cardToShow: string; cards: string[]; iAmChooser: boolean; round: number; chooser: User };
+  Game: { cardToShow: string; cards: Card[]; iAmChooser: boolean; round: number; chooser: User };
   Winner: undefined;
   Settings: undefined;
 };

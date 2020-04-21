@@ -43,8 +43,6 @@ app.use(express.json());
 
 app.use('/api/packs', packsHandler);
 
-app.get('/', (_, res) => res.sendFile(__dirname + '/index.html'));
-
 io.on('connection', (socket: Socket) => {
   createRoom(socket);
   joinRoom(socket, io);
