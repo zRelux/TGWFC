@@ -104,7 +104,6 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
   const onShare = async () => {
     try {
       const redirectUrl = Linking.makeUrl('lobby', { roomId });
-      console.log(redirectUrl);
 
       const result = await Share.share({
         message:

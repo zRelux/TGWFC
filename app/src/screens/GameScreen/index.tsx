@@ -63,8 +63,8 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route, navigatio
 
   const dataToShow = !myTurn && !allCardsHaveBeenChosen ? myCards : chosenCards;
   const showCard = myTurn ? (allCardsHaveBeenChosen ? true : false) : true;
-  const showButton = myTurn && allCardsHaveBeenChosen ? true : !myTurn && !selectedCard ? true : false;
   const showMessage = (myTurn && chosenCards.length === 0) || winnerUser !== '';
+  const showOnlySelected = myTurn ? false : !!selectedCard;
 
   useEffect(() => {
     if (socketAvailable) {
@@ -163,17 +163,26 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route, navigatio
                   {showCard && (
                     <>
                       <ChooseCardText>{item.card}</ChooseCardText>
-                      {showButton && (
+                      {selectedCard?.card === item.card && !allCardsHaveBeenChosen ? (
                         <ChooseCardButton
                           selected={selectedCard?.card === item.card}
                           onPress={selectCard(item, myTurn)}
                         >
                           <ChooseCardButtonText selected={selectedCard?.card === item.card}>
-                            {selectedCard?.card === item.card
-                              ? translate('GameScreen.cardButtonChosen')
-                              : translate('GameScreen.cardButtonChoose')}
+                            {translate('GameScreen.cardButtonChosen')}
                           </ChooseCardButtonText>
                         </ChooseCardButton>
+                      ) : (
+                        !showOnlySelected && (
+                          <ChooseCardButton
+                            selected={selectedCard?.card === item.card}
+                            onPress={selectCard(item, myTurn)}
+                          >
+                            <ChooseCardButtonText selected={selectedCard?.card === item.card}>
+                              {translate('GameScreen.cardButtonChoose')}
+                            </ChooseCardButtonText>
+                          </ChooseCardButton>
+                        )
                       )}
                     </>
                   )}

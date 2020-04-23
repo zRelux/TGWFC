@@ -89,9 +89,11 @@ export const ChooserTextSection = styled.View`
   display: flex;
   align-items: center;
   justify-content: center;
+
+  margin-left: ${({ theme }) => theme.spacing.double};
+  margin-right: ${({ theme }) => theme.spacing.double};
 `;
 
 export const ChooserText = styled.Text`
-  width: ${({ theme }) => theme.spacing.multiple(29)};
-  font-size: 45px;
+  font-size: 40px;
 `;

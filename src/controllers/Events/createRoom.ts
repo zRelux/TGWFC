@@ -4,7 +4,7 @@ import path from 'path';
 import { Socket } from 'socket.io';
 import shortId from 'shortid';
 
-import rooms, { Room, Pack } from '../../db';
+import roomsdb, { Room, Pack } from '../../db';
 
 import shuffle from '../../utils/shuffle';
 
@@ -35,7 +35,7 @@ const createRoom = (payload: CreatePayload, socketId: string) => {
     users: [{ username: payload.username, id: socketId, points: 0, cards: [], host: true }]
   };
 
-  rooms.push(roomToAdd);
+  roomsdb.rooms.push(roomToAdd);
 
   return roomToAdd;
 };

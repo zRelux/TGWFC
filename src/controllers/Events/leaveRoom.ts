@@ -1,7 +1,7 @@
 import socketIO, { Socket } from 'socket.io';
 
 import findRoom from '../../utils/findRoom';
-import rooms, { RoomUser, Room, updateRooms } from '../../db';
+import roomsdb, { RoomUser, Room } from '../../db';
 import addWithBounds from '../../utils/addWithBounds';
 
 type JoinPayload = {
@@ -22,7 +22,7 @@ const leaveRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser, Roo
       nextHost.host = true;
 
       if (roomToClose.users.length === 0) {
-        updateRooms(rooms.filter(room => room.id !== roomToClose.id));
+        roomsdb.rooms = roomsdb.rooms.filter(room => room.id !== roomToClose.id);
       }
 
       return [roomToClose, user, nextHost];

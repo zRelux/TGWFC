@@ -3,7 +3,7 @@ import path from 'path';
 
 import express from 'express';
 
-import rooms, { Pack } from '../../db';
+import roomsdb, { Pack } from '../../db';
 import shuffle from '../../utils/shuffle';
 
 const router = express.Router();
@@ -24,7 +24,7 @@ router.get('/', (_, res) => {
 });
 
 router.get('/rooms', (_, res) => {
-  res.send({ rooms });
+  res.send({ rooms: roomsdb.rooms });
 });
 
 export default router;

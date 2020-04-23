@@ -1,7 +1,7 @@
 import socketIO, { Socket } from 'socket.io';
 
 import findRoom from '../../utils/findRoom';
-import rooms, { updateRooms } from '../../db';
+import roomsdb from '../../db';
 
 type FinishPayload = {
   room_id: string;
@@ -11,7 +11,7 @@ const finishGame = (payload: FinishPayload) => {
   const roomToClose = findRoom(payload.room_id);
 
   if (roomToClose) {
-    updateRooms(rooms.filter(room => room.id !== roomToClose.id));
+    roomsdb.rooms = roomsdb.rooms.filter(room => room.id !== roomToClose.id);
 
     return roomToClose;
   } else {
@@ -27,7 +27,7 @@ export default (socket: Socket, io: socketIO.Server) => {
       let winner: any = {};
 
       for (let i = 0; i < room.users.length; i++) {
-        if (winner) {
+        if (Object.keys(winner).length !== 0) {
           if (room.users[i].points > winner.points) {
             winner = room.users[i];
           }

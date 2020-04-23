@@ -2,6 +2,7 @@ import socketIO, { Socket } from 'socket.io';
 
 import { Card } from '../../db';
 import findRoom from '../../utils/findRoom';
+import shuffle from '../../utils/shuffle';
 
 type ChosenCard = {
   room_id: string;
@@ -37,7 +38,7 @@ export default (socket: Socket, io: socketIO.Server) => {
       const room = chosenCard(payload, socket.id);
 
       io.to(room.id).emit('chosenCardReply', {
-        chosen_cards: room.chosenCards
+        chosen_cards: shuffle(room.chosenCards)
       });
     } catch (error) {
       socket.emit('chosenCardReply', {

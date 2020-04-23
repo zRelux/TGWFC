@@ -1,4 +1,4 @@
-const domain = 'https://cah-back.herokuapp.com'; //'http://192.168.1.4:3000'; //
+const domain = 'http://192.168.1.10:3000'; //'https://cah-back.herokuapp.com'; //
 export const socketEndpoint = domain;
 const api = domain + '/api';
 

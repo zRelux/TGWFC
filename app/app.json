@@ -1,17 +1,20 @@
 {
   "expo": {
-    "scheme": "tgwfc",
+    "sdk": "37.0.1",
     "name": "The Game With Funny Cards",
     "slug": "tgwfc",
-    "platforms": ["ios", "android"],
+    "owner": "Leonardo Drici",
+    "privacy": "public",
     "version": "1.0.0",
+    "platforms": ["ios", "android"],
+    "githubUrl": "",
     "orientation": "portrait",
+    "primaryColor": "#414141",
+    "androidShowExponentNotificationInShellApp": true,
+    "scheme": "tgwfc",
+    "entryPoint": "./src/index.tsx",
+    "locales": "en",
     "icon": "./assets/icon.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#f2f2f2"
-    },
     "updates": {
       "fallbackToCacheTimeout": 0
     },
@@ -19,5 +22,21 @@
     "ios": {
       "supportsTablet": true
     }
+  },
+  "androidStatusBar": {
+    "barStyle": "dark-content",
+    "backgroundColor": "#00000000",
+    "hidden": false,
+    "translucent": true
+  },
+  "splash": {
+    "image": "./assets/splash.png",
+    "resizeMode": "contain",
+    "backgroundColor": "#f2f2f2"
+  },
+  "updates": {
+    "enabled": true,
+    "checkAutomatically": "ON_LOAD",
+    "fallbackToCacheTimeout": 30000
   }
 }

@@ -28,8 +28,11 @@ export type Room = {
 
 let rooms: Room[] = [];
 
-export const updateRooms = (newRooms: Room[]) => {
-  rooms = newRooms;
+export default {
+  get rooms() {
+    return rooms;
+  },
+  set rooms(val) {
+    rooms = val;
+  }
 };
-
-export default rooms;
