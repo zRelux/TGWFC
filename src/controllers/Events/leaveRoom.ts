@@ -19,13 +19,13 @@ const leaveRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser, Roo
 
     roomToClose.users = [...roomToClose.users.slice(0, index), ...roomToClose.users.slice(index + 1)];
 
+    if (roomToClose.users.length === 0) {
+      roomsdb.rooms = roomsdb.rooms.filter(room => room.id !== roomToClose.id);
+    }
+
     if (user.host === true) {
       const nextHost = roomToClose.users[addWithBounds(index, roomToClose.users.length)];
       nextHost.host = true;
-
-      if (roomToClose.users.length === 0) {
-        roomsdb.rooms = roomsdb.rooms.filter(room => room.id !== roomToClose.id);
-      }
 
       return [roomToClose, user, nextHost];
     }

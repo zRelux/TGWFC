@@ -84,9 +84,17 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
         room_id: route.params.roomId
       });
 
-      setRoomId(route.params.roomId);
+      listen<RoomUpdatePayload>('joinRoomReply', ({ error }) => {
+        if (error) {
+          navigation.navigate('Home', { msg: error });
+        } else {
+          if (route.params && route.params.roomId) {
+            setRoomId(route.params.roomId);
 
-      route.params.roomId = undefined;
+            route.params.roomId = undefined;
+          }
+        }
+      });
     }
   }, [route.params]);
 
@@ -135,7 +143,7 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
       room_id: roomId
     });
 
-    navigation.goBack();
+    navigation.navigate('Home');
   };
 
   return (

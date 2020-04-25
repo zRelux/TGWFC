@@ -1,4 +1,4 @@
-const domain = 'https://tgwfc-stg.herokuapp.com'; //https://tgwfc-prod.herokuapp.com 'http://192.168.1.10:3000'; //
+const domain = 'http://192.168.1.10:3000'; //https://tgwfc-prod.herokuapp.com 'http://192.168.1.10:3000'; //
 export const socketEndpoint = domain;
 const api = domain + '/api';
 
