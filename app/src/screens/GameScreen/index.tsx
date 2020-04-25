@@ -188,7 +188,7 @@ const GameScreen: React.FunctionComponent<GameScreenProps> = ({ route, navigatio
                   )}
                 </ChooseCard>
               )}
-              keyExtractor={({ card }) => card}
+              keyExtractor={(card, index) => card.userId + '/' + card.card + '/index/' + index}
             />
           )}
         </ScrollView>

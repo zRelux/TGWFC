@@ -5,7 +5,8 @@ export const Container = styled.View`
   padding-bottom: 0;
 `;
 
-export const Content = styled.View`
+export const Content = styled.ScrollView`
+  flex: 1;
   padding-top: ${({ theme }) => theme.spacing.double};
   padding-left: ${({ theme }) => theme.spacing.double};
   padding-right: ${({ theme }) => theme.spacing.double};

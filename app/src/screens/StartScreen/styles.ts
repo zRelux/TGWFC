@@ -76,3 +76,10 @@ export const PackItemText = styled.Text<PackItemProps>`
   font-size: 26px;
   color: ${({ theme, selected }) => (!selected ? theme.colors.primary : theme.colors.primaryText)};
 `;
+
+export const LoadingSpinner = styled.View`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;

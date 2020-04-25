@@ -29,12 +29,14 @@ const fetchAndSave = async () => {
           .filter(blackCard => blackCard.pick === 1)
           .map(cardToUse => cardToUse.content);
 
-        finalPacks.push({
-          id: set,
-          name: packData.pack.name,
-          toFill: toFillCards,
-          toUse: packData.white
-        });
+        if (toFillCards.lenght > 0) {
+          finalPacks.push({
+            id: set,
+            name: packData.pack.name,
+            toFill: toFillCards,
+            toUse: packData.white
+          });
+        }
       } catch (error) {
         console.log(error.message);
       }

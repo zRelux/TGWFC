@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react';
 import { FlatList, Share } from 'react-native';
 
-import { Linking } from 'expo';
-
 import { RouteProp } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../..';
@@ -103,26 +101,15 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
 
   const onShare = async () => {
     try {
-      const redirectUrl = Linking.makeUrl('lobby', { roomId });
-
-      const result = await Share.share({
+      await Share.share({
         message:
           'Join a match and play against me at ' +
-          redirectUrl +
+          'https://thegamewithfunnycards.com/share/' +
+          roomId +
           ' or enter this room id ' +
           roomId +
           ' in the participate section'
       });
-
-      if (result.action === Share.sharedAction) {
-        if (result.activityType) {
-          // shared with activity type of result.activityType
-        } else {
-          // shared
-        }
-      } else if (result.action === Share.dismissedAction) {
-        // dismissed
-      }
     } catch (error) {
       alert(error.message);
     }

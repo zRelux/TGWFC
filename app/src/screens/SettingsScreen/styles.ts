@@ -34,7 +34,7 @@ export const DisclaimerView = styled.View`
   flex-direction: row;
   flex-wrap: wrap;
 
-  margin-top: ${({ theme }) => theme.spacing.multiple(22.5)};
+  margin-top: auto;
   margin-right: ${({ theme }) => theme.spacing.double};
   margin-bottom: ${({ theme }) => theme.spacing.double};
 `;

@@ -35,6 +35,7 @@ export type RootStackParamList = {
 const Stack = createStackNavigator<RootStackParamList>();
 
 const prefix = Linking.makeUrl('/');
+
 const config = {
   Home: 'home',
   Start: 'start',

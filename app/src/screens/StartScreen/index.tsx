@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import { FlatList } from 'react-native';
+import { FlatList, ActivityIndicator } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -19,7 +19,16 @@ import { translate } from '../../translations';
 
 import values from './data';
 
-import { RoundSelector, RoundsText, Picker, PickerText, PackContainer, PackItem, PackItemText } from './styles';
+import {
+  RoundSelector,
+  RoundsText,
+  Picker,
+  PickerText,
+  PackContainer,
+  PackItem,
+  PackItemText,
+  LoadingSpinner
+} from './styles';
 
 interface StartScreenProps {
   navigation: StackNavigationProp<RootStackParamList, 'Start'>;
@@ -79,15 +88,21 @@ const StartScreen: React.FunctionComponent<StartScreenProps> = ({ navigation }) 
         </RoundSelector>
         <PackContainer>
           <RoundsText bottom>{translate('StartScreen.packsHeader')}</RoundsText>
-          <FlatList
-            data={packs}
-            renderItem={({ item }) => (
-              <PackItem onPress={addPack(item.id)} selected={selectedPacks.includes(item.id)}>
-                <PackItemText selected={selectedPacks.includes(item.id)}>{item.name}</PackItemText>
-              </PackItem>
-            )}
-            keyExtractor={(pack) => pack.id}
-          />
+          {packs.length === 0 ? (
+            <LoadingSpinner>
+              <ActivityIndicator />
+            </LoadingSpinner>
+          ) : (
+            <FlatList
+              data={packs}
+              renderItem={({ item }) => (
+                <PackItem onPress={addPack(item.id)} selected={selectedPacks.includes(item.id)}>
+                  <PackItemText selected={selectedPacks.includes(item.id)}>{item.name}</PackItemText>
+                </PackItem>
+              )}
+              keyExtractor={(pack) => pack.id}
+            />
+          )}
         </PackContainer>
       </Content>
       <BottomSheet
