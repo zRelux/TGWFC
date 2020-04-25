@@ -91,7 +91,7 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
   }, [route.params]);
 
   useEffect(() => {
-    if (kickedUserId === id) {
+    if (kickedUserId !== '' && kickedUserId === id) {
       setKickedUserId('');
       navigation.navigate('Home', {
         msg: 'You got kicked!!'
