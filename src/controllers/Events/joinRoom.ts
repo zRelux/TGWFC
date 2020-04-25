@@ -1,5 +1,7 @@
 import socketIO, { Socket } from 'socket.io';
 
+import * as yup from 'yup';
+
 import findRoom from '../../utils/findRoom';
 import { Room, RoomUser } from '../../db';
 
@@ -29,9 +31,16 @@ const joinRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser] => {
   }
 };
 
+const schema = yup.object().shape({
+  username: yup.string(),
+  room_id: yup.string()
+});
+
 export default (socket: Socket, io: socketIO.Server) => {
-  socket.on('joinRoom', (payload: JoinPayload) => {
+  socket.on('joinRoom', async (payload: JoinPayload) => {
     try {
+      await schema.validate(payload);
+
       const [room, user] = joinRoom(payload, socket.id);
 
       socket.join(room.id);

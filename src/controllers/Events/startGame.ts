@@ -1,5 +1,7 @@
 import socketIO, { Socket } from 'socket.io';
 
+import * as yup from 'yup';
+
 import findRoom from '../../utils/findRoom';
 import assingCards from '../../utils/assingCards';
 import addWithBounds from '../../utils/addWithBounds';
@@ -34,9 +36,15 @@ export const startGame = (payload: StartPayload, userId: string) => {
   }
 };
 
+const schema = yup.object().shape({
+  user_id: yup.string(),
+  room_id: yup.string()
+});
+
 export default (socket: Socket, io: socketIO.Server) => {
-  socket.on('startGame', (payload: StartPayload) => {
+  socket.on('startGame', async (payload: StartPayload) => {
     try {
+      await schema.validate(payload);
       const room = startGame(payload, socket.id);
 
       room.users.forEach(user => {

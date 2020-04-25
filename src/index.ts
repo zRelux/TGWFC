@@ -19,7 +19,8 @@ import {
   finishGame,
   disconnect,
   leaveRoom,
-  kickUser
+  kickUser,
+  updateUserRef
 } from './controllers/Events';
 
 import packsHandler from './routes/Packs';
@@ -52,6 +53,8 @@ io.on('connection', (socket: Socket) => {
   chosenCard(socket, io);
   chosenSelectedWinner(socket, io);
   finishGame(socket, io);
+
+  updateUserRef(socket, io);
 
   disconnect(socket, io);
 });

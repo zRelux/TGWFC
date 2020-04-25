@@ -78,6 +78,7 @@ const App: React.FunctionComponent = () => {
     if (state !== undefined && savedUsername !== '') {
       setInitialState(state);
     } else {
+      console.log(state);
     }
   };
 

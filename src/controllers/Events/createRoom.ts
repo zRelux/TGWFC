@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+import * as yup from 'yup';
+
 import { Socket } from 'socket.io';
 import shortId from 'shortid';
 
@@ -40,17 +42,29 @@ const createRoom = (payload: CreatePayload, socketId: string) => {
   return roomToAdd;
 };
 
+const schema = yup.object().shape({
+  username: yup.string(),
+  number_of_rounds: yup.number().min(5),
+  packs: yup.array().of(yup.string())
+});
+
 export default (socket: Socket) => {
-  socket.on('createRoom', (payload: CreatePayload) => {
-    const { id } = createRoom(payload, socket.id);
+  socket.on('createRoom', async (payload: CreatePayload) => {
+    try {
+      await schema.validate(payload);
 
-    socket.join(id);
+      const { id } = createRoom(payload, socket.id);
 
-    socket.emit('createRoomReply', {
-      room: {
-        id,
-        host: { username: payload.username, id: socket.id, points: 0, cards: [], host: true }
-      }
-    });
+      socket.join(id);
+
+      socket.emit('createRoomReply', {
+        room: {
+          id,
+          host: { username: payload.username, id: socket.id, points: 0, cards: [], host: true }
+        }
+      });
+    } catch (error) {
+      console.error(error);
+    }
   });
 };

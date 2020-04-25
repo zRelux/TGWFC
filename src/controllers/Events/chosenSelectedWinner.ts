@@ -1,5 +1,7 @@
 import socketIO, { Socket } from 'socket.io';
 
+import * as yup from 'yup';
+
 import { RoomUser, Room, Card } from '../../db';
 
 import findRoom from '../../utils/findRoom';
@@ -59,9 +61,19 @@ const winnerRound = (payload: WinnerPayload, socketId: string): [Room, RoomUser 
   }
 };
 
+const schema = yup.object().shape({
+  room_id: yup.string(),
+  winner_card: yup.object({
+    userId: yup.string(),
+    card: yup.string()
+  })
+});
+
 export default (socket: Socket, io: socketIO.Server) => {
-  socket.on('chosenSelectedWinner', (payload: WinnerPayload) => {
+  socket.on('chosenSelectedWinner', async (payload: WinnerPayload) => {
     try {
+      await schema.validate(payload);
+
       const [room, winner, gameFinished] = winnerRound(payload, socket.id);
 
       room.users.forEach(user => {

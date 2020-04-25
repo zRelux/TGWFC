@@ -7,6 +7,7 @@ import chosenCard from './chosenCard';
 import chosenSelectedWinner from './chosenSelectedWinner';
 import disconnect from './disconnect';
 import finishGame from './finishGame';
+import updateUserRef from './updateUserRef';
 
 export {
   createRoom,
@@ -17,5 +18,6 @@ export {
   chosenCard,
   chosenSelectedWinner,
   finishGame,
-  disconnect
+  disconnect,
+  updateUserRef
 };

@@ -23,6 +23,10 @@ interface CreateRoomReplyPayload {
   };
 }
 
+interface UpdateUser {
+  new_id: string;
+}
+
 const DataContext = React.createContext<DataContext>({
   roomId: '',
   username: '',
@@ -38,7 +42,7 @@ export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ child
   const [username, setUsername] = useState('');
   const [packs, setPacks] = useState<Pack[]>([]);
 
-  const { listen, socketAvailable } = useSocket();
+  const { socket, id, setId, send, listen, socketAvailable } = useSocket();
 
   const fetchPacks = async () => {
     const fetchedPacks = await fetchBff('/packs');
@@ -56,8 +60,24 @@ export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ child
   };
 
   useEffect(() => {
+    if (socketAvailable && socket) {
+      listen('reconnect', () => {
+        send('updateUserRef', {
+          room_id: roomId,
+          old_id: id,
+          new_id: socket.id
+        });
+      });
+
+      listen<UpdateUser>('updateUserRefReply', ({ new_id }) => {
+        setId(new_id);
+      });
+    }
+  }, [socketAvailable, roomId]);
+
+  useEffect(() => {
     if (username !== '') saveUsername(username);
-  }, [username]);
+  }, [username, saveUsername]);
 
   useEffect(() => {
     if (socketAvailable) {
@@ -65,7 +85,7 @@ export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ child
         setRoomId(room.id);
       });
     }
-  }, [socketAvailable]);
+  }, [socketAvailable, listen, setRoomId]);
 
   useEffect(() => {
     fetchPacks();

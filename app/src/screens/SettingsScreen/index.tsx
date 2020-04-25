@@ -5,13 +5,12 @@ import { RootStackParamList } from '../..';
 
 import { translate } from '../../translations';
 
-import { Content } from '../../components/ScreenContainer';
 import ScreenContainer from '../../components/ScreenContainer';
 import BottomSheet from '../../components/BottomSheet';
 import { StartHeader } from '../StartScreen/styles';
 import useData from '../../hooks/useData';
 
-import { UsernameInputText, UsernameInput, DisclaimerText, DisclaimerView } from './styles';
+import { SettingsContent, UsernameInputText, UsernameInput, DisclaimerText, DisclaimerView } from './styles';
 
 interface SettingsScreenProps {
   navigation: StackNavigationProp<RootStackParamList, 'Settings'>;
@@ -31,7 +30,7 @@ const SettingsScreen: React.FunctionComponent<SettingsScreenProps> = ({ navigati
 
   return (
     <ScreenContainer>
-      <Content>
+      <SettingsContent>
         <StartHeader>{translate('SettingsScreen.pageHeader')}</StartHeader>
         <UsernameInputText>{translate('SettingsScreen.inputHeader')}</UsernameInputText>
         <UsernameInput value={username} onChangeText={onChangeUsername} />
@@ -41,7 +40,7 @@ const SettingsScreen: React.FunctionComponent<SettingsScreenProps> = ({ navigati
           <DisclaimerText>{translate('SettingsScreen.disclaimer.second')}</DisclaimerText>
           <DisclaimerText bold>{translate('SettingsScreen.disclaimer.secondBold')}</DisclaimerText>
         </DisclaimerView>
-      </Content>
+      </SettingsContent>
       <BottomSheet
         goBackFalsy={empty}
         falsyAction={empty}

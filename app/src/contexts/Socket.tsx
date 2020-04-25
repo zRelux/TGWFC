@@ -18,37 +18,39 @@ YellowBox.ignoreWarnings([
 })();
 
 interface SocketContext {
-  id?: string;
+  socket: SocketIOClient.Socket | null;
+  id: string;
+  setId: (newId: string) => void;
   socketAvailable: boolean;
   listen: <T extends object>(key: string, callback: (payload: T) => void) => object | void;
   send: <T extends object>(key: string, payload: T) => void;
 }
 const SocketContext = React.createContext<SocketContext>({
+  socket: null,
   id: '',
   socketAvailable: false,
   listen: () => {},
-  send: () => {}
+  send: () => {},
+  setId: () => {}
 });
 
 interface SocketProviderProps {}
 
 export const SocketProvider: React.FunctionComponent<SocketProviderProps> = ({ children }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket | null>(null);
+  const [id, setId] = useState('');
   const [socketAvailable, setSocketAvailable] = useState(false);
 
   useEffect(() => {
-    const socket = io(socketEndpoint, {
-      transports: ['websocket'],
-      jsonp: false
-    });
+    const socket = io(socketEndpoint);
 
     socket.connect();
     socket.on('connect', () => {
+      setId(socket.id);
       setSocketAvailable(true);
     });
 
     setSocket(socket);
-
     return () => {
       socket.disconnect();
     };
@@ -67,7 +69,7 @@ export const SocketProvider: React.FunctionComponent<SocketProviderProps> = ({ c
   };
 
   return (
-    <SocketContext.Provider value={{ id: socket?.id, socketAvailable, listen, send }}>
+    <SocketContext.Provider value={{ socket, id, setId, socketAvailable, listen, send }}>
       {children}
     </SocketContext.Provider>
   );

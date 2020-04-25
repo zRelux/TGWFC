@@ -1,5 +1,7 @@
 import socketIO, { Socket } from 'socket.io';
 
+import * as yup from 'yup';
+
 import { Card } from '../../db';
 import findRoom from '../../utils/findRoom';
 import shuffle from '../../utils/shuffle';
@@ -32,9 +34,19 @@ const chosenCard = (payload: ChosenCard, userId: string) => {
   }
 };
 
+const schema = yup.object().shape({
+  room_id: yup.string(),
+  chosen_card: yup.object({
+    userId: yup.string(),
+    card: yup.string()
+  })
+});
+
 export default (socket: Socket, io: socketIO.Server) => {
-  socket.on('chosenCard', (payload: ChosenCard) => {
+  socket.on('chosenCard', async (payload: ChosenCard) => {
     try {
+      await schema.validate(payload);
+
       const room = chosenCard(payload, socket.id);
 
       io.to(room.id).emit('chosenCardReply', {

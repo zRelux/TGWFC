@@ -1,5 +1,7 @@
 import socketIO, { Socket } from 'socket.io';
 
+import * as yup from 'yup';
+
 import findRoom from '../../utils/findRoom';
 import roomsdb, { RoomUser, Room } from '../../db';
 import addWithBounds from '../../utils/addWithBounds';
@@ -34,9 +36,15 @@ const leaveRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser, Roo
   }
 };
 
+const schema = yup.object().shape({
+  room_id: yup.string()
+});
+
 export default (socket: Socket, io: socketIO.Server) => {
-  socket.on('leaveRoom', (payload: JoinPayload) => {
+  socket.on('leaveRoom', async (payload: JoinPayload) => {
     try {
+      await schema.validate(payload);
+
       const [room, user, newHost] = leaveRoom(payload, socket.id);
 
       socket.leave(room.id);

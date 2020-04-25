@@ -1,12 +1,10 @@
 import styled from 'styled-components/native';
 
-export const SettingContainer = styled.View`
+export const SettingsContent = styled.ScrollView`
   flex: 1;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  margin-left: ${({ theme }) => theme.spacing.double};
-  margin-right: ${({ theme }) => theme.spacing.double};
+  padding-top: ${({ theme }) => theme.spacing.double};
+  padding-left: ${({ theme }) => theme.spacing.double};
+  padding-right: ${({ theme }) => theme.spacing.double};
 `;
 
 export const UsernameInputText = styled.Text`
