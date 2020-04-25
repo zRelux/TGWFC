@@ -16,7 +16,7 @@ const joinRoom = (payload: JoinPayload, socketId: string): [Room, RoomUser] => {
   if (room) {
     const isInRoom = room.users.findIndex(user => user.id === socketId);
 
-    if (isInRoom > -1) {
+    if (isInRoom !== -1) {
       throw new Error('Already joined');
     }
 
