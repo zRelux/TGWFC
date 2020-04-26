@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import fetchBff from '../utils/fetchBff';
+
 import useSocket from '../hooks/useSocket';
+
+import fetchBff from '../utils/fetchBff';
 import { saveUsername, getUsername } from '../utils/storage';
+
+import { OpenedLink } from '../types/OpenedLink';
 
 type Pack = {
   id: string;
@@ -9,11 +13,13 @@ type Pack = {
 };
 
 interface DataContext {
+  openedLink?: OpenedLink;
   roomId: string;
   username: string;
   packs: Pack[];
   setUsername: (newUsername: string) => void;
   setRoomId: (newRoomId: string) => void;
+  setOpenedLink: (newOpenedLink?: OpenedLink) => void;
 }
 
 interface CreateRoomReplyPayload {
@@ -32,15 +38,19 @@ const DataContext = React.createContext<DataContext>({
   username: '',
   packs: [],
   setUsername: () => {},
-  setRoomId: () => {}
+  setRoomId: () => {},
+  setOpenedLink: () => {}
 });
 
-interface DataProviderProps {}
+interface DataProviderProps {
+  openedLink?: OpenedLink;
+}
 
-export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ children }) => {
+export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ children, openedLink }) => {
   const [roomId, setRoomId] = useState('');
   const [username, setUsername] = useState('');
   const [packs, setPacks] = useState<Pack[]>([]);
+  const [link, setLink] = useState(openedLink);
 
   const { socket, id, setId, send, listen, socketAvailable } = useSocket();
 
@@ -93,7 +103,11 @@ export const DataProvider: React.FunctionComponent<DataProviderProps> = ({ child
   }, []);
 
   return (
-    <DataContext.Provider value={{ packs, roomId, username, setUsername, setRoomId }}>{children}</DataContext.Provider>
+    <DataContext.Provider
+      value={{ openedLink: link, setOpenedLink: setLink, packs, roomId, username, setUsername, setRoomId }}
+    >
+      {children}
+    </DataContext.Provider>
   );
 };
 

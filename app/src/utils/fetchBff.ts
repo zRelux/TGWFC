@@ -1,6 +1,7 @@
-const domain = 'https://tgwfc-stg.herokuapp.com'; //https://tgwfc-prod.herokuapp.com 'http://192.168.1.10:3000'; //
-export const socketEndpoint = domain;
-const api = domain + '/api';
+import ENV from './config';
+
+export const socketEndpoint = ENV.domain;
+const api = ENV.domain + '/api';
 
 export default async (path: string) => {
   const res = await fetch(api + path);

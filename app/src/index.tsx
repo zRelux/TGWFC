@@ -11,6 +11,7 @@ import { ParticipantProvider } from './contexts/Participant';
 import { DataProvider } from './contexts/Data';
 
 import { User, Card } from './types/User';
+import { OpenedLink } from './types/OpenedLink';
 
 import { getUsername } from './utils/storage';
 
@@ -55,6 +56,7 @@ const App: React.FunctionComponent = () => {
   const [ready, setReady] = useState(false);
   const [initialState, setInitialState] = useState<any>();
   const [usernameInStore, setUsernameInStore] = useState('');
+  const [openedLink, setOpenedLink] = useState<undefined | OpenedLink>();
 
   const ref = useRef<NavigationContainerRef>(null);
 
@@ -67,9 +69,7 @@ const App: React.FunctionComponent = () => {
     let savedUsername = '';
     try {
       savedUsername = await getUsername();
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
 
     setUsernameInStore(savedUsername);
 
@@ -77,7 +77,13 @@ const App: React.FunctionComponent = () => {
 
     if (state !== undefined && savedUsername !== '') {
       setInitialState(state);
-    } else {
+    } else if (state !== undefined && savedUsername === '') {
+      if (state.routes[0].name === 'Lobby' && state.routes[0].params) {
+        setOpenedLink({
+          goTo: 'Lobby',
+          param: state.routes[0].params
+        });
+      }
     }
   };
 
@@ -92,7 +98,7 @@ const App: React.FunctionComponent = () => {
     <ThemeProvider theme={theme}>
       <SocketProvider>
         <ParticipantProvider>
-          <DataProvider>
+          <DataProvider openedLink={openedLink}>
             <NavigationContainer initialState={initialState} ref={ref}>
               <Stack.Navigator
                 screenOptions={{

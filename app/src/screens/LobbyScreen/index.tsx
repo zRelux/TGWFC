@@ -78,25 +78,28 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
   }, [socketAvailable]);
 
   useEffect(() => {
-    if (route.params && route.params.roomId) {
-      send('joinRoom', {
-        username,
-        room_id: route.params.roomId
-      });
+    if (socketAvailable)
+      if (route.params && route.params.roomId) {
+        console.log('Joining');
 
-      listen<RoomUpdatePayload>('joinRoomReply', ({ error }) => {
-        if (error) {
-          navigation.navigate('Home', { msg: error });
-        } else {
-          if (route.params && route.params.roomId) {
-            setRoomId(route.params.roomId);
+        send('joinRoom', {
+          username,
+          room_id: route.params.roomId
+        });
 
-            route.params.roomId = undefined;
+        listen<RoomUpdatePayload>('joinRoomReply', ({ error }) => {
+          if (error) {
+            navigation.navigate('Home', { msg: error });
+          } else {
+            if (route.params && route.params.roomId) {
+              setRoomId(route.params.roomId);
+
+              route.params.roomId = undefined;
+            }
           }
-        }
-      });
-    }
-  }, [route.params]);
+        });
+      }
+  }, [route.params, socketAvailable]);
 
   useEffect(() => {
     if (kickedUserId !== '' && kickedUserId === id) {

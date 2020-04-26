@@ -17,7 +17,7 @@ interface SettingsScreenProps {
 }
 
 const SettingsScreen: React.FunctionComponent<SettingsScreenProps> = ({ navigation }) => {
-  const { username, setUsername } = useData();
+  const { username, setUsername, openedLink, setOpenedLink } = useData();
   const empty = username === '';
 
   const onChangeUsername = (newUsername: string) => {
@@ -25,7 +25,12 @@ const SettingsScreen: React.FunctionComponent<SettingsScreenProps> = ({ navigati
   };
 
   const saveName = () => {
-    navigation.navigate('Home');
+    if (!openedLink) {
+      navigation.navigate('Home');
+    } else {
+      navigation.navigate(openedLink.goTo, openedLink.param);
+      setOpenedLink(undefined);
+    }
   };
 
   return (
