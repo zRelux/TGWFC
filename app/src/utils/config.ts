@@ -14,7 +14,7 @@ const ENV = {
 
 function getEnvVars(env = '') {
   if (env.indexOf('staging') !== -1) return ENV.staging;
-  if (env.indexOf('default') !== -1) return ENV.prod;
+  if (env.indexOf('prod') !== -1) return ENV.prod;
   return ENV.dev;
 }
 

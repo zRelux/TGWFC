@@ -13,8 +13,8 @@
     "type-check": "tsc --noEmit",
     "publish:stg": "expo publish --release-channel staging",
     "publish:prod": "expo publish --release-channel prod",
-    "build:stg": "",
-    "build:prod": ""
+    "build:stg": "expo build:android --release-channel staging",
+    "build:prod": "expo build:android --release-channel prod"
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.6",
