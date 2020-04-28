@@ -46,8 +46,6 @@ export const SocketProvider: React.FunctionComponent<SocketProviderProps> = ({ c
 
     socket.connect();
     socket.on('connect', () => {
-      console.log('Connected');
-
       setId(socket.id);
       setSocketAvailable(true);
     });

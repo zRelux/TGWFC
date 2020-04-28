@@ -80,8 +80,6 @@ const LobbyScreen: React.FunctionComponent<LobbyScreenProps> = ({ navigation, ro
   useEffect(() => {
     if (socketAvailable)
       if (route.params && route.params.roomId) {
-        console.log('Joining');
-
         send('joinRoom', {
           username,
           room_id: route.params.roomId
