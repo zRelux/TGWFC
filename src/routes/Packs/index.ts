@@ -10,20 +10,20 @@ const router = express.Router();
 
 router.get('/', (_, res) => {
   // @ts-ignore
-  const packsFile = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'db/packs.json')));
+  const packsFile: Pack[] = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'db/packs.json')));
 
-  const itaPack = packsFile[0];
+  const itaPack = packsFile.slice(0, 1)[0];
 
-  const packs: Pack[] = shuffle(packsFile);
+  const packs = shuffle(packsFile);
 
-  const packsToSend = packs.map(pack => {
+  const packsToSend = [itaPack, ...packs].map(pack => {
     return {
       id: pack.id,
       name: pack.name
     };
   });
 
-  res.json({ packs: [itaPack, ...packsToSend] });
+  res.json({ packs: packsToSend });
 });
 
 router.get('/rooms', (_, res) => {
