@@ -9,11 +9,12 @@ import shuffle from '../../utils/shuffle';
 const router = express.Router();
 
 router.get('/', (_, res) => {
-  const packsFile = fs.readFileSync(path.join(__dirname, '..', '..', 'db/packs.json'));
+  // @ts-ignore
+  const packsFile = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'db/packs.json')));
+
   const itaPack = packsFile[0];
 
-  // @ts-ignore
-  const packs: Pack[] = shuffle(JSON.parse(packsFile));
+  const packs: Pack[] = shuffle(packsFile);
 
   const packsToSend = packs.map(pack => {
     return {
