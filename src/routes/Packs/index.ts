@@ -10,6 +10,8 @@ const router = express.Router();
 
 router.get('/', (_, res) => {
   const packsFile = fs.readFileSync(path.join(__dirname, '..', '..', 'db/packs.json'));
+  const itaPack = packsFile[0];
+
   // @ts-ignore
   const packs: Pack[] = shuffle(JSON.parse(packsFile));
 
@@ -20,7 +22,7 @@ router.get('/', (_, res) => {
     };
   });
 
-  res.json({ packs: packsToSend });
+  res.json({ packs: [itaPack, ...packsToSend] });
 });
 
 router.get('/rooms', (_, res) => {
