@@ -40,7 +40,11 @@
     "android": {
       "package": "com.thegamewithfunnycards",
       "versionCode": 1,
-      "permissions": []
+      "permissions": [],
+      "adaptiveIcon": {
+        "backgroundColor": "#ffffff",
+        "foregroundImage": "./assets/icon-fg.png"
+      }
     }
   }
 }
